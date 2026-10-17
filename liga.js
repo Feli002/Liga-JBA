@@ -96,3 +96,69 @@ function formLogin(contenedor, onOk, { titulo = 'Ingresa como mesa', texto = 'Us
     onOk(staff);
   });
 }
+
+/* ---------- Crear o editar una categoría de la fecha en curso ---------- */
+function siguienteCodigo(numFecha, modalidad, categorias){
+  const pref = `F${numFecha}-${modalidad === 'Kata' ? 'KT' : 'KM'}-`;
+  const nums = categorias.map(c => c.codigo || '').filter(c => c.startsWith(pref)).map(c => parseInt(c.slice(pref.length), 10) || 0);
+  return pref + String(Math.max(0, ...nums) + 1).padStart(2, '0');
+}
+
+function abrirModalCategoria({ fecha, modalidad, categorias, grados, categoria = null, onGuardado }){
+  const bd = document.createElement('div');
+  bd.className = 'modal-backdrop open'; bd.setAttribute('role', 'dialog'); bd.setAttribute('aria-modal', 'true');
+  const gOpts = (sel) => '<option value="">Sin límite</option>' + grados.map(g => `<option value="${g.orden}" ${g.orden === sel ? 'selected' : ''}>${esc(g.nombre)}</option>`).join('');
+  const c = categoria || {};
+  bd.innerHTML = `
+    <form class="modal wide" novalidate>
+      <h2 class="modal-title">${categoria ? 'Editar categoría' : 'Crear categoría'}</h2>
+      <p class="modal-text">${categoria
+        ? 'Los cambios aplican a esta fecha y no cambian a los competidores ya inscritos.'
+        : `Se crea en la Fecha ${esc(fecha.numero)}, modalidad ${esc(modalidad)}. Después marca o agrega a sus competidores.`}</p>
+      <label class="field"><span>Nombre</span><input name="nombre" maxlength="100" value="${esc(c.nombre || '')}" placeholder="Ej: ${modalidad.toUpperCase()} MIXTO 7 A 8 AÑOS"></label>
+      <label class="field"><span>Sexo</span><select name="sexo">${['Mixto', 'Femenino', 'Masculino'].map(s => `<option ${c.sexo === s ? 'selected' : ''}>${s}</option>`).join('')}</select></label>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <label class="field"><span>Edad mínima</span><input name="emin" type="number" min="3" max="99" inputmode="numeric" value="${c.edad_min ?? ''}" placeholder="Sin límite"></label>
+        <label class="field"><span>Edad máxima</span><input name="emax" type="number" min="3" max="99" inputmode="numeric" value="${c.edad_max ?? ''}" placeholder="Sin límite"></label>
+        <label class="field"><span>Grado desde</span><select name="gmin">${gOpts(c.grado_min)}</select></label>
+        <label class="field"><span>Grado hasta</span><select name="gmax">${gOpts(c.grado_max)}</select></label>
+      </div>
+      ${modalidad === 'Kata' ? `<label class="field"><span>Jueces</span><select name="jueces"><option value="5" ${c.n_jueces !== 3 ? 'selected' : ''}>5 jueces</option><option value="3" ${c.n_jueces === 3 ? 'selected' : ''}>3 jueces</option></select></label>` : ''}
+      <p class="form-error" role="alert" hidden></p>
+      <div class="actions">
+        <button type="button" class="btn ghost" data-cancel>Cancelar</button>
+        <button type="submit" class="btn primary">${categoria ? 'Guardar cambios' : 'Crear categoría'}</button>
+      </div>
+    </form>`;
+  document.body.appendChild(bd);
+  const f = bd.querySelector('form'), err = f.querySelector('.form-error'), ok = f.querySelector('[type=submit]');
+  const cerrar = () => bd.remove();
+  f.querySelector('[data-cancel]').addEventListener('click', cerrar);
+  bd.addEventListener('click', (e) => { if (e.target === bd) cerrar(); });
+  f.nombre.focus();
+
+  f.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const num = (v) => v === '' ? null : Number(v);
+    const fila = {
+      nombre: f.nombre.value.trim().toUpperCase(), sexo: f.sexo.value,
+      edad_min: num(f.emin.value), edad_max: num(f.emax.value),
+      grado_min: num(f.gmin.value), grado_max: num(f.gmax.value)
+    };
+    if (modalidad === 'Kata') fila.n_jueces = Number(f.jueces.value);
+    const falla = (t) => { err.textContent = t; err.hidden = false; };
+    if (!fila.nombre) return falla('Escribe el nombre de la categoría.');
+    if (fila.edad_min !== null && fila.edad_max !== null && fila.edad_min > fila.edad_max) return falla('La edad mínima no puede ser mayor que la máxima.');
+    if (fila.grado_min !== null && fila.grado_max !== null && fila.grado_min > fila.grado_max) return falla('El grado "desde" debe ser menor o igual que el grado "hasta".');
+    if (categorias.some(x => x.nombre === fila.nombre && x.id !== c.id)) return falla('Ya existe una categoría con ese nombre en esta fecha.');
+    ok.disabled = true; err.hidden = true;
+    const q = categoria
+      ? sb.from('categorias').update(fila).eq('id', categoria.id)
+      : sb.from('categorias').insert({ ...fila, fecha_id: fecha.id, modalidad, codigo: siguienteCodigo(fecha.numero, modalidad, categorias) });
+    const { data, error } = await q.select('id, nombre, codigo, n_jueces, sexo, edad_min, edad_max, grado_min, grado_max').single();
+    ok.disabled = false;
+    if (error) return falla(mensajeError(error));
+    cerrar();
+    onGuardado(data);
+  });
+}

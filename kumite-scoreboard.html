@@ -566,6 +566,10 @@
 
   .two-col{ display:grid; grid-template-columns:minmax(300px, 380px) minmax(0, 1fr); gap:16px; align-items:start; }
   .two-col > *{ min-width:0; }
+  .cat-head{ display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:6px; }
+  .cat-head .lbl{ font-size:11px; letter-spacing:0.12em; text-transform:uppercase; color:#8b9490; }
+  .cat-actions{ display:flex; gap:8px; align-items:center; }
+  .link-btn{ background:none; border:none; color:var(--paper); text-decoration:underline; text-underline-offset:3px; font-family:'Oswald', sans-serif; font-size:13px; cursor:pointer; padding:6px 4px; }
   .byes{ font-size:12px; color:#8b9490; margin:0 0 10px; line-height:1.5; }
   .byes b{ color:var(--paper); font-weight:500; }
   @media (max-width:820px){ .two-col{ grid-template-columns:1fr; } }
@@ -679,9 +683,14 @@
     <p class="k-brand">Kumite <span>· WUKF</span></p>
     <div class="fecha-pill" id="fechaPill">—</div>
     <div class="k-card">
-      <label class="field" style="margin:0"><span>Categoría</span>
-        <select class="k-select" id="catSelect"><option value="">Elige una categoría…</option></select>
-      </label>
+      <div class="cat-head">
+        <span class="lbl" id="catLbl">Categoría</span>
+        <span class="cat-actions">
+          <button class="link-btn" id="editCatBtn" type="button" hidden>Editar categoría</button>
+          <button class="btn sm" id="newCatBtn" type="button">+ Crear categoría</button>
+        </span>
+      </div>
+      <select class="k-select" id="catSelect" aria-labelledby="catLbl"><option value="">Elige una categoría…</option></select>
     </div>
 
     <div class="two-col" id="catBox" hidden>
@@ -1022,21 +1031,34 @@
     if (!f){ $('gateCard').innerHTML = '<p class="gate">No hay una fecha en curso.<br>Iníciala desde la <a href="index.html">pantalla de inicio</a> para registrar combates.</p>'; return; }
     fecha = f;
     const [c, g] = await Promise.all([
-      sb.from('categorias').select('id, nombre, codigo').eq('fecha_id', f.id).eq('modalidad', 'Kumite').order('codigo'),
+      sb.from('categorias').select('id, nombre, codigo, sexo, edad_min, edad_max, grado_min, grado_max').eq('fecha_id', f.id).eq('modalidad', 'Kumite').order('codigo'),
       sb.from('grados').select('orden, nombre').order('orden')
     ]);
     categorias = c.data || []; grados = g.data || [];
     $('fechaPill').textContent = `Fecha ${f.numero}` + (f.dia ? ` · ${diaLargo(f.dia)}` : '');
-    $('catSelect').innerHTML = categorias.length
-      ? '<option value="">Elige una categoría…</option>' + categorias.map(x => `<option value="${x.id}">${esc(x.nombre)}</option>`).join('')
-      : '<option value="">Esta fecha no tiene categorías de Kumite</option>';
+    pintarCategorias();
     showScreen('screenSetup');
   }
+
+  function pintarCategorias(sel){
+    $('catSelect').innerHTML = (categorias.length ? '<option value="">Elige una categoría…</option>' : '<option value="">Esta fecha no tiene categorías de Kumite: crea una</option>') +
+      categorias.map(x => `<option value="${x.id}" ${x.id === sel ? 'selected' : ''}>${esc(x.nombre)}</option>`).join('');
+  }
+  const trasGuardarCategoria = (c) => {
+    const i = categorias.findIndex(x => x.id === c.id);
+    if (i === -1) categorias.push(c); else categorias[i] = c;
+    pintarCategorias(c.id); cat = c;
+    $('catBox').hidden = false; $('llaveCard').hidden = false; $('editCatBtn').hidden = false;
+    toast(i === -1 ? 'Categoría creada' : 'Categoría actualizada');
+    cargarNomina();
+  };
+  $('newCatBtn').addEventListener('click', () => abrirModalCategoria({ fecha, modalidad: 'Kumite', categorias, grados, onGuardado: trasGuardarCategoria }));
+  $('editCatBtn').addEventListener('click', () => cat && abrirModalCategoria({ fecha, modalidad: 'Kumite', categorias, grados, categoria: cat, onGuardado: trasGuardarCategoria }));
 
   // ===================== NÓMINA =====================
   $('catSelect').addEventListener('change', () => {
     cat = categorias.find(x => x.id === Number($('catSelect').value)) || null;
-    $('catBox').hidden = !cat; $('llaveCard').hidden = !cat;
+    $('catBox').hidden = !cat; $('llaveCard').hidden = !cat; $('editCatBtn').hidden = !cat;
     if (cat) cargarNomina();
   });
 

@@ -347,7 +347,12 @@
   .seg button[aria-pressed="true"]{ background:var(--ink); color:#fff; }
   .seg button:disabled{ cursor:not-allowed; opacity:0.6; }
   .row-tools{ display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:16px; }
-  .row-tools .hint{ font-size:12px; color:var(--muted); }
+  .row-tools .hint{ font-size:12px; color:var(--muted); margin:2px 0 0; }
+  .cat-head{ display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:6px; }
+  .cat-head .lbl{ font-size:11px; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted); }
+  .cat-actions{ display:flex; gap:8px; align-items:center; }
+  .link-btn{ background:none; border:none; color:var(--ink); text-decoration:underline; text-underline-offset:3px; font-family:'Oswald', sans-serif; font-size:13px; cursor:pointer; padding:6px 4px; }
+  .jueces-row{ background:#fbfaf6; border:1px solid var(--line); border-radius:12px; padding:12px 14px; margin:16px 0 4px; }
   .judges-grid.n3{ grid-template-columns:repeat(3, 1fr); }
   .ronda-tag{ display:block; text-align:center; font-size:12px; letter-spacing:0.12em; text-transform:uppercase; color:var(--red); margin-top:-10px; margin-bottom:12px; }
   .kata-field select{ width:100%; border:1px solid var(--line); border-radius:10px; padding:12px 14px; font-family:'Oswald', sans-serif; font-size:16px; color:var(--ink); background:#fff; }
@@ -382,11 +387,23 @@
     <div class="brand">Resultados Kata <span>· WUKF</span></div>
     <div class="fecha-pill" id="fechaPill">—</div>
     <div class="card">
-      <label class="field"><span>Categoría</span>
-        <select class="cat-select" id="catSelect"><option value="">Elige una categoría…</option></select>
-      </label>
+      <div class="cat-head">
+        <span class="lbl" id="catLbl">Categoría</span>
+        <span class="cat-actions">
+          <button class="link-btn" id="editCatBtn" type="button" hidden>Editar categoría</button>
+          <button class="add-btn" id="newCatBtn" type="button">+ Crear categoría</button>
+        </span>
+      </div>
+      <select class="cat-select" id="catSelect" aria-labelledby="catLbl"><option value="">Elige una categoría…</option></select>
 
       <div id="nominaBox" hidden>
+        <div class="row-tools jueces-row">
+          <div><p class="section-title" style="margin:0">Panel de jueces</p><p class="hint" id="juecesHint">Elige cuántos jueces puntúan esta categoría.</p></div>
+          <div class="seg" id="juecesSeg" role="group" aria-label="Cantidad de jueces">
+            <button type="button" data-n="3" aria-pressed="false">3 jueces</button>
+            <button type="button" data-n="5" aria-pressed="true">5 jueces</button>
+          </div>
+        </div>
         <div class="list-head">
           <p class="section-title" id="presTitle">Presentes · orden de presentación</p>
           <button class="add-btn" id="addCompBtn" type="button">+ Agregar competidor</button>
@@ -422,10 +439,7 @@
 
       <div class="row-tools">
         <p class="section-title" style="margin:0">Puntuación de los jueces</p>
-        <div class="seg" role="group" aria-label="Cantidad de jueces">
-          <button type="button" data-n="3" aria-pressed="false">3 jueces</button>
-          <button type="button" data-n="5" aria-pressed="true">5 jueces</button>
-        </div>
+        <span class="progress-pill" id="juecesPill">5 jueces</span>
       </div>
       <div class="judges-grid" id="judgesGrid"></div>
 
@@ -539,24 +553,34 @@
     }
     fecha = f;
     const [c, k, g] = await Promise.all([
-      sb.from('categorias').select('id, nombre, codigo, n_jueces').eq('fecha_id', f.id).eq('modalidad', 'Kata').order('codigo'),
+      sb.from('categorias').select('id, nombre, codigo, n_jueces, sexo, edad_min, edad_max, grado_min, grado_max').eq('fecha_id', f.id).eq('modalidad', 'Kata').order('codigo'),
       sb.from('katas').select('nombre, grupo').order('orden'),
       sb.from('grados').select('orden, nombre').order('orden')
     ]);
     categorias = c.data || []; katas = k.data || []; grados = g.data || [];
     $('fechaPill').textContent = `Fecha ${f.numero}` + (f.dia ? ` · ${diaLargo(f.dia)}` : '');
-    $('catSelect').innerHTML = '<option value="">Elige una categoría…</option>' +
-      categorias.map(x => `<option value="${x.id}">${esc(x.nombre)}</option>`).join('');
-    if (!categorias.length){
-      $('catSelect').innerHTML = '<option value="">Esta fecha no tiene categorías de Kata</option>';
-    }
+    pintarCategorias();
     showScreen('screenSetup');
   }
+
+  function pintarCategorias(sel){
+    $('catSelect').innerHTML = (categorias.length ? '<option value="">Elige una categoría…</option>' : '<option value="">Esta fecha no tiene categorías de Kata: crea una</option>') +
+      categorias.map(x => `<option value="${x.id}" ${x.id === sel ? 'selected' : ''}>${esc(x.nombre)}</option>`).join('');
+  }
+  const trasGuardarCategoria = (c) => {
+    const i = categorias.findIndex(x => x.id === c.id);
+    if (i === -1) categorias.push(c); else categorias[i] = c;
+    pintarCategorias(c.id); cat = c; $('editCatBtn').hidden = false;
+    toast(i === -1 ? 'Categoría creada' : 'Categoría actualizada');
+    cargarNomina();
+  };
+  $('newCatBtn').addEventListener('click', () => abrirModalCategoria({ fecha, modalidad: 'Kata', categorias, grados, onGuardado: trasGuardarCategoria }));
+  $('editCatBtn').addEventListener('click', () => cat && abrirModalCategoria({ fecha, modalidad: 'Kata', categorias, grados, categoria: cat, onGuardado: trasGuardarCategoria }));
 
   // ===================== NÓMINA =====================
   $('catSelect').addEventListener('change', () => {
     cat = categorias.find(x => x.id === Number($('catSelect').value)) || null;
-    manual = {};
+    manual = {}; $('editCatBtn').hidden = !cat;
     if (cat) cargarNomina(); else $('nominaBox').hidden = true;
   });
 
@@ -583,7 +607,25 @@
     pintarNomina();
   }
 
+  function pintarJueces(){
+    const bloq = bloqueoJueces();
+    $('juecesSeg').querySelectorAll('button').forEach(b => {
+      b.setAttribute('aria-pressed', String(Number(b.dataset.n) === jueces));
+      b.disabled = bloq && Number(b.dataset.n) !== jueces;
+    });
+    $('juecesHint').textContent = bloq ? 'Fijado: esta categoría ya tiene notas guardadas.' : 'Elige cuántos jueces puntúan esta categoría.';
+  }
+  $('juecesSeg').querySelectorAll('button').forEach(b => b.addEventListener('click', async () => {
+    const n = Number(b.dataset.n);
+    if (bloqueoJueces() || n === jueces) return;
+    const antes = jueces; jueces = n; pintarJueces();
+    const { error } = await sb.from('categorias').update({ n_jueces: n }).eq('id', cat.id);
+    if (error){ jueces = antes; pintarJueces(); toast(mensajeError(error)); return; }
+    cat.n_jueces = n;
+  }));
+
   function pintarNomina(){
+    pintarJueces();
     const pres = orden.map(id => nomina.find(n => n.insId === id)).filter(Boolean);
     const aus = nomina.filter(n => !n.presente);
     const sw = (n) => `<label class="switch"><input type="checkbox" data-ins="${n.insId}" ${n.presente ? 'checked' : ''} aria-label="Presente: ${esc(n.nombre)}"><span class="track"></span><span class="lbl">${n.presente ? 'Presente' : 'Ausente'}</span></label>`;
@@ -696,10 +738,6 @@
     // No se puede cambiar la cantidad de jueces una vez que hay notas guardadas
     return nomina.some(n => n.notas.Principal);
   }
-  document.querySelectorAll('#screenCompete .seg button').forEach(b => b.addEventListener('click', () => {
-    if (bloqueoJueces()) return;
-    jueces = Number(b.dataset.n); pintarCompetidor();
-  }));
 
   function pintarCompetidor(){
     const c = cola[idx], n = nominaDe(c), previo = n.notas[c.ronda];
@@ -708,11 +746,7 @@
     $('progressPill').textContent = (c.ronda === 'Extra' ? 'Desempate ' : 'Competidor ') + (idx + 1) + ' de ' + cola.length;
     $('validationMsg').textContent = '';
 
-    const bloqueado = bloqueoJueces();
-    document.querySelectorAll('#screenCompete .seg button').forEach(b => {
-      b.setAttribute('aria-pressed', String(Number(b.dataset.n) === jueces));
-      b.disabled = bloqueado && Number(b.dataset.n) !== jueces;
-    });
+    $('juecesPill').textContent = `${jueces} jueces`;
 
     const sel = $('kataSelect'), otro = $('kataOtro');
     sel.innerHTML = '<option value="">Elige el kata…</option>' +
