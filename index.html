@@ -131,6 +131,12 @@
   .btn.danger{ background:var(--aka); color:#fff; }
   .btn.ghost{ background:#fff; color:var(--ink); border-color:var(--line); }
   .btn:disabled{ background:var(--muted); color:#fff; cursor:not-allowed; }
+  .next-date{
+    display:flex; align-items:center; justify-content:space-between; gap:12px;
+    background:var(--soft); border-radius:12px; padding:12px 14px; margin-bottom:16px;
+  }
+  .next-date span{ font-size:12px; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted); }
+  .next-date b{ font-family:'Bebas Neue', sans-serif; font-size:26px; font-weight:400; letter-spacing:0.03em; line-height:1; }
   .summary{ background:var(--soft); border-radius:12px; padding:12px 14px; font-size:14px; line-height:1.6; margin-bottom:16px; }
 
   .toast{
@@ -290,36 +296,17 @@
   $('btnIniciar').addEventListener('click', () => conSesion(formIniciar));
 
   async function formIniciar(){
-    $('modalBody').innerHTML = '<p class="modal-text">Cargando fechas…</p>';
-    const [{ data: temp }, ] = await Promise.all([
-      sb.from('temporadas').select('id, nombre').order('anio', { ascending:false }).limit(1).maybeSingle()
-    ]);
-    const [{ data: fechas, error }, { data: cats }] = await Promise.all([
-      sb.from('fechas').select('id, numero, inicio').eq('temporada_id', temp?.id ?? 0).order('numero'),
-      sb.from('categorias').select('fecha_id')
-    ]);
-    if (error || !fechas){ $('modalBody').innerHTML = `<p class="form-error">${esc(mensajeError(error))}</p><div class="actions"><button class="btn ghost" onclick="cerrarModal()">Cerrar</button></div>`; return; }
-
-    // Sugerir la primera fecha posterior a la última con datos o ya iniciada
-    const usadas = new Set((cats || []).map(c => c.fecha_id));
-    const ultima = Math.max(0, ...fechas.filter(f => f.inicio || usadas.has(f.id)).map(f => f.numero));
-    const libres = fechas.filter(f => !f.inicio);
-    const sugerida = libres.find(f => f.numero > ultima) || libres[0];
-    if (!libres.length){
-      $('modalBody').innerHTML = `<h2 class="modal-title">Iniciar nueva fecha</h2><p class="modal-text">Todas las fechas de ${esc(temp?.nombre || 'la temporada')} ya fueron iniciadas.</p><div class="actions"><button class="btn ghost" onclick="cerrarModal()">Cerrar</button></div>`;
-      return;
-    }
+    $('modalBody').innerHTML = '<p class="modal-text">Cargando…</p>';
+    const { data: numero, error } = await sb.rpc('proxima_fecha');
+    if (error){ $('modalBody').innerHTML = `<p class="form-error">${esc(mensajeError(error))}</p><div class="actions"><button class="btn ghost" onclick="cerrarModal()">Cerrar</button></div>`; return; }
 
     $('modalBody').innerHTML = `
       <form id="fIniciar" novalidate>
         <h2 class="modal-title">Iniciar nueva fecha</h2>
         <p class="modal-text">Al confirmar se registra la hora de inicio del evento.</p>
-        <div class="row2">
-          <label class="field"><span>Fecha de la liga</span>
-            <select name="fecha">${libres.map(f => `<option value="${f.id}" ${f.id === sugerida.id ? 'selected' : ''}>Fecha ${f.numero}</option>`).join('')}</select></label>
-          <label class="field"><span>Día del evento</span>
-            <input type="date" name="dia" value="${hoyISO()}" required></label>
-        </div>
+        <div class="next-date"><span>Se registrará como</span><b>Fecha ${esc(numero)}</b></div>
+        <label class="field"><span>Día del evento</span>
+          <input type="date" name="dia" value="${hoyISO()}" required></label>
         <label class="field"><span>Juez de mesa 1</span><input name="j1" autocomplete="off" maxlength="60"></label>
         <label class="field"><span>Juez de mesa 2</span><input name="j2" autocomplete="off" maxlength="60"></label>
         <label class="field"><span>Juez de mesa 3 <em>(recomendado)</em></span><input name="j3" autocomplete="off" maxlength="60"></label>
@@ -340,9 +327,7 @@
       e.preventDefault();
       if (jueces().length < 2){ err.textContent = 'Ingresa al menos dos jueces de mesa.'; err.hidden = false; return; }
       ok.disabled = true; ok.textContent = 'Iniciando…'; err.hidden = true;
-      const { data, error } = await sb.rpc('iniciar_fecha', {
-        p_fecha_id: Number(f.fecha.value), p_dia: f.dia.value, p_jueces: jueces()
-      });
+      const { data, error } = await sb.rpc('iniciar_nueva_fecha', { p_dia: f.dia.value, p_jueces: jueces() });
       if (error){ err.textContent = mensajeError(error); err.hidden = false; ok.disabled = false; ok.textContent = 'Iniciar fecha'; return; }
       cerrarModal();
       toast(`Fecha ${data.numero} iniciada a las ${hora(data.inicio)}`);
