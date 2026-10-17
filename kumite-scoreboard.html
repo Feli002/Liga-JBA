@@ -688,6 +688,7 @@
         <span class="cat-actions">
           <button class="link-btn" id="editCatBtn" type="button" hidden>Editar categoría</button>
           <button class="btn sm" id="newCatBtn" type="button">+ Crear categoría</button>
+          <button class="btn sm primary" id="extraBtn" type="button">Ir al marcador</button>
         </span>
       </div>
       <select class="k-select" id="catSelect" aria-labelledby="catLbl"><option value="">Elige una categoría…</option></select>
@@ -822,6 +823,19 @@
     <p class="warn" id="saveWarn" hidden></p>
     <p class="form-error" id="saveError" hidden></p>
     <div class="actions"><button class="btn" id="saveCancel" type="button">Cancelar</button><button class="btn primary" id="saveOk" type="button">Guardar</button></div>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="extraModal" role="dialog" aria-modal="true">
+  <div class="modal wide">
+    <h3 class="modal-title">Pelea fuera de la llave</h3>
+    <p class="modal-text" id="extraTexto">Elige a los competidores para guardar el combate en esta categoría como "Pelea extra": cuenta Ippones y faltas, pero no cambia la llave ni el podio. Sin nombres, el marcador funciona como contador libre y no guarda nada.</p>
+    <div id="extraCampos">
+      <label class="field"><span><span style="color:#ff8c86">●</span> Aka</span><select id="extraAka"></select></label>
+      <label class="field"><span>○ Shiro</span><select id="extraShiro"></select></label>
+    </div>
+    <p class="form-error" id="extraError" hidden></p>
+    <div class="actions"><button class="btn" id="extraCancel" type="button">Cancelar</button><button class="btn primary" id="extraOk" type="button">Ir al marcador</button></div>
   </div>
 </div>
 
@@ -1264,13 +1278,43 @@
     if (acc === 'pelear' || acc === 'repetir') abrirCombate(x);
   });
 
+  // ===================== PELEA EXTRA / CONTADOR LIBRE =====================
+  $('extraBtn').addEventListener('click', () => {
+    const conCat = !!cat && nomina.some(n => n.presente);
+    $('extraCampos').hidden = !conCat;
+    $('extraTexto').textContent = conCat
+      ? 'Elige a los competidores para guardar el combate en esta categoría como "Pelea extra": cuenta Ippones y faltas, pero no cambia la llave ni el podio. Sin nombres, el marcador funciona como contador libre y no guarda nada.'
+      : (cat ? 'Esta categoría no tiene presentes: el marcador funcionará como contador libre y no guardará el combate. Para guardarlo, marca primero a los competidores como presentes.'
+             : 'Sin una categoría elegida, el marcador funciona como contador libre y no guarda el combate. Para guardarlo, elige primero la categoría.');
+    if (conCat){
+      const ops = '<option value="">Sin nombre</option>' + nomina.filter(n => n.presente)
+        .map(n => `<option value="${n.compId}">${esc(n.nombre)}</option>`).join('');
+      $('extraAka').innerHTML = ops; $('extraShiro').innerHTML = ops;
+    }
+    $('extraError').hidden = true;
+    $('extraModal').classList.add('open');
+  });
+  $('extraCancel').addEventListener('click', () => $('extraModal').classList.remove('open'));
+  $('extraOk').addEventListener('click', () => {
+    const conCat = !$('extraCampos').hidden;
+    const aka = conCat ? Number($('extraAka').value) || null : null;
+    const shiro = conCat ? Number($('extraShiro').value) || null : null;
+    const err = (t) => { $('extraError').textContent = t; $('extraError').hidden = false; };
+    if ((aka && !shiro) || (!aka && shiro)) return err('Elige a ambos competidores, o deja los dos sin nombre para usar el contador libre.');
+    if (aka && aka === shiro) return err('Aka y Shiro deben ser competidores distintos.');
+    $('extraModal').classList.remove('open');
+    abrirCombate({ id: 'extra', ronda: 'Pelea extra', aka, shiro, res: null }, { extra: true, libre: !aka });
+  });
+
   // ===================== COMBATE =====================
-  function abrirCombate(x){
-    combate = { id: x.id, ronda: x.ronda, aka: x.aka, shiro: x.shiro, dbId: x.res?.dbId || null, orden: x.res?.orden || null };
+  function abrirCombate(x, op = {}){
+    combate = { id: x.id, ronda: x.ronda, aka: x.aka, shiro: x.shiro, dbId: x.res?.dbId || null, orden: x.res?.orden || null, extra: !!op.extra, libre: !!op.libre };
     m = vacio(); senshu = null; sucio = false;
-    nombres = { aka: nom(x.aka), shiro: nom(x.shiro) };
-    rondaTxt = x.ronda; catTxt = cat.nombre;
-    const meta = leerLocal(`kumite-meta-${cat.id}`);
+    nombres = combate.libre ? { aka: 'Aka', shiro: 'Shiro' } : { aka: nom(x.aka), shiro: nom(x.shiro) };
+    rondaTxt = combate.libre ? 'Contador libre' : x.ronda; catTxt = cat ? cat.nombre : 'WUKF · Kumite';
+    $('saveBtn').textContent = combate.libre ? 'Reiniciar marcador' : 'Guardar combate';
+    $('toBracketBtn').textContent = cat ? '← Llave' : '← Categorías';
+    const meta = cat ? leerLocal(`kumite-meta-${cat.id}`) : null;
     if (meta){ target = meta; categoryLabelText = document.querySelector(`.cat-btn[data-target="${meta}"]`).dataset.label; }
     pause(); remaining = totalSeconds;
     showScreen('screenBoard'); document.querySelector('.site-banner').hidden = true;
@@ -1279,13 +1323,17 @@
   function volverLlave(){
     pause(); combate = null; nombres = { aka: '', shiro: '' }; rondaTxt = ''; m = vacio(); senshu = null;
     pintarMarcador(); document.querySelector('.site-banner').hidden = false;
-    showScreen('screenSetup'); pintarNomina(); pintarLlave();
+    showScreen('screenSetup'); if (cat){ pintarNomina(); pintarLlave(); }
   }
   $('toBracketBtn').addEventListener('click', () => sucio ? $('leaveModal').classList.add('open') : volverLlave());
   $('leaveCancel').addEventListener('click', () => $('leaveModal').classList.remove('open'));
   $('leaveOk').addEventListener('click', () => { $('leaveModal').classList.remove('open'); volverLlave(); });
 
   $('saveBtn').addEventListener('click', () => {
+    if (combate && combate.libre){
+      pause(); m = vacio(); senshu = null; sucio = false; remaining = totalSeconds; pintarMarcador();
+      toast('Marcador reiniciado'); return;
+    }
     pause(); pintarMarcador();
     const g = ganadorActual();
     $('saveResumen').innerHTML = `<b>${esc(rondaTxt)}</b><br>
@@ -1304,7 +1352,7 @@
     const gan = document.querySelector('input[name=ganador]:checked')?.value;
     if (!gan){ $('saveError').textContent = 'Elige quién gana el combate.'; $('saveError').hidden = false; return; }
     const hs = ['aka', 'shiro'].filter(s => m[s].atenai >= 3 || m[s].kinshi >= 4);
-    const orden = combate.orden || (Object.values(st.res).reduce((a, r) => Math.max(a, r.orden || 0), 0) + 1);
+    const orden = combate.extra ? null : (combate.orden || (Object.values(st.res).reduce((a, r) => Math.max(a, r.orden || 0), 0) + 1));
     const fila = {
       categoria_id: cat.id, orden, ronda: combate.ronda, aka_id: combate.aka, shiro_id: combate.shiro,
       aka_ippon: m.aka.ippon, aka_wazaari: m.aka.waza, aka_atenai: m.aka.atenai, aka_kinshi: m.aka.kinshi,
@@ -1317,6 +1365,11 @@
     const { data, error } = await q;
     $('saveOk').disabled = false; $('saveOk').textContent = 'Guardar';
     if (error){ $('saveError').textContent = mensajeError(error); $('saveError').hidden = false; return; }
+    if (combate.extra){
+      sucio = false; $('saveModal').classList.remove('open');
+      toast(`Pelea extra guardada: gana ${gan === 'Aka' ? nombres.aka : nombres.shiro}`);
+      volverLlave(); return;
+    }
     // Si al volver a pelear cambia el ganador, se anulan los combates posteriores de esos competidores
     const previo = st.res[combate.id];
     if (previo && previo.ganador !== gan){
