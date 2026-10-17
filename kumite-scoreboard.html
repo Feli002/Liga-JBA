@@ -533,6 +533,129 @@
     transition:background .12s ease;
   }
   .site-banner .banner-back:hover{ background:rgba(12,18,16,0.8); }
+  /* ---------- NUEVO: mesa conectada ---------- */
+  [hidden]{ display:none !important; }
+  .screen{ display:none; }
+  .screen.active{ display:flex; flex-direction:column; flex:1; }
+  .wrap{ width:100%; max-width:1040px; margin:0 auto; padding:20px clamp(12px,3vw,28px) 48px; }
+  .k-brand{ font-family:'Bebas Neue', sans-serif; font-size:28px; letter-spacing:0.04em; margin:0 0 6px; color:var(--paper); }
+  .k-brand span{ color:var(--gold); }
+  .fecha-pill{ display:inline-flex; align-items:center; gap:8px; font-size:11px; letter-spacing:0.12em; text-transform:uppercase; color:#8fd1a6; background:rgba(63,143,91,0.15); border-radius:999px; padding:6px 12px; margin-bottom:16px; }
+  .fecha-pill::before{ content:""; width:7px; height:7px; border-radius:50%; background:#3f8f5b; }
+  .k-card{ background:#121915; border:1px solid var(--line); border-radius:16px; padding:20px; margin-bottom:16px; }
+  .k-card h2{ font-size:12px; letter-spacing:0.16em; text-transform:uppercase; color:#8b9490; font-weight:500; margin:0 0 12px; }
+  .gate{ text-align:center; color:#b7bcb6; padding:24px 10px; line-height:1.6; }
+  .gate a{ color:var(--gold); }
+
+  .field{ display:block; margin-bottom:14px; }
+  .field > span{ display:block; font-size:11px; letter-spacing:0.12em; text-transform:uppercase; color:#8b9490; margin-bottom:6px; }
+  .field input, .field select, .k-select{
+    width:100%; background:#0c1210; color:var(--paper); border:1px solid var(--line); border-radius:10px;
+    padding:12px 14px; font-family:'Oswald', sans-serif; font-size:16px;
+  }
+  .field input:focus, .field select:focus, .k-select:focus{ outline:none; border-color:var(--gold); }
+  .modal-title{ font-family:'Bebas Neue', sans-serif; font-size:28px; letter-spacing:0.03em; margin:0 0 6px; color:var(--paper); }
+  .modal-text{ font-size:14px; color:#8b9490; margin:0 0 16px; line-height:1.45; }
+  .form-error{ font-size:14px; color:#ffd2cc; background:rgba(225,75,60,0.18); border-radius:10px; padding:10px 12px; margin:0 0 14px; }
+  .actions{ display:flex; gap:10px; justify-content:flex-end; }
+  .btn{ font-family:'Oswald', sans-serif; font-size:15px; letter-spacing:0.04em; border-radius:12px; padding:12px 18px; cursor:pointer; border:1px solid var(--line); background:transparent; color:var(--paper); }
+  .btn.primary{ background:var(--gold); border-color:var(--gold); color:var(--ink); font-weight:600; }
+  .btn.danger{ background:var(--danger); border-color:var(--danger); color:#fff; }
+  .btn:disabled{ opacity:0.5; cursor:not-allowed; }
+  .btn.sm{ font-size:13px; padding:8px 12px; border-radius:10px; }
+
+  .two-col{ display:grid; grid-template-columns:minmax(300px, 380px) minmax(0, 1fr); gap:16px; align-items:start; }
+  .two-col > *{ min-width:0; }
+  .byes{ font-size:12px; color:#8b9490; margin:0 0 10px; line-height:1.5; }
+  .byes b{ color:var(--paper); font-weight:500; }
+  @media (max-width:820px){ .two-col{ grid-template-columns:1fr; } }
+
+  ul.k-list{ list-style:none; margin:0; padding:0; }
+  ul.k-list li{ display:flex; align-items:center; gap:10px; padding:10px 4px; border-bottom:1px solid var(--line); }
+  ul.k-list li:last-child{ border-bottom:none; }
+  ul.k-list .seed{ width:24px; height:24px; border-radius:50%; background:var(--gold); color:var(--ink); display:grid; place-items:center; font-size:12px; font-weight:700; flex:none; }
+  ul.k-list .nm{ flex:1; min-width:0; font-size:15px; }
+  ul.k-list li.aus .nm{ color:#6f7773; }
+  .ord{ display:flex; gap:4px; flex:none; }
+  .ord button{ width:30px; height:30px; border-radius:8px; border:1px solid var(--line); background:transparent; color:#b7bcb6; cursor:pointer; }
+  .ord button:disabled{ opacity:0.3; cursor:default; }
+  .list-tools{ display:flex; justify-content:space-between; align-items:center; gap:8px; margin:6px 0 8px; }
+  .sub{ font-size:12px; color:#8b9490; letter-spacing:0.06em; }
+
+  .switch{ position:relative; display:inline-flex; align-items:center; flex:none; cursor:pointer; }
+  .switch input{ position:absolute; opacity:0; width:1px; height:1px; }
+  .switch .track{ width:44px; height:26px; border-radius:999px; background:#3a423e; position:relative; transition:background .15s; }
+  .switch .track::after{ content:""; position:absolute; top:3px; left:3px; width:20px; height:20px; border-radius:50%; background:#fff; transition:transform .15s; }
+  .switch input:checked + .track{ background:#3f8f5b; }
+  .switch input:checked + .track::after{ transform:translateX(18px); }
+  .switch input:focus-visible + .track{ outline:3px solid var(--gold); outline-offset:2px; }
+
+  /* Llave */
+  .bracket{ display:grid; grid-auto-flow:column; grid-auto-columns:minmax(200px, 1fr); gap:14px; overflow-x:auto; padding-bottom:6px; }
+  @media (max-width:820px){ .bracket{ grid-auto-flow:row; grid-auto-columns:auto; } }
+  .round h3{ font-size:11px; letter-spacing:0.16em; text-transform:uppercase; color:var(--gold); font-weight:600; margin:0 0 8px; }
+  .round .matches{ display:flex; flex-direction:column; gap:10px; justify-content:space-around; height:calc(100% - 26px); }
+  .match{ border:1px solid var(--line); border-radius:12px; background:#0c1210; overflow:hidden; }
+  .match.next{ border-color:var(--gold); box-shadow:0 0 0 1px var(--gold); }
+  .slot{ display:flex; align-items:center; gap:8px; padding:9px 10px; font-size:14px; }
+  .slot + .slot{ border-top:1px solid var(--line); }
+  .slot i{ width:6px; align-self:stretch; border-radius:3px; flex:none; }
+  .slot.aka i{ background:var(--aka); }
+  .slot.shiro i{ background:var(--shiro); }
+  .slot .who{ flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .slot.win .who{ font-weight:600; color:#fff; }
+  .slot.win .who::after{ content:" ✓"; color:var(--gold); }
+  .slot.lose .who{ color:#6f7773; }
+  .slot .who.vacio{ color:#6f7773; font-style:italic; }
+  .slot select{ flex:1; min-width:0; background:#121915; color:var(--paper); border:1px solid var(--line); border-radius:8px; padding:6px; font-family:'Oswald', sans-serif; font-size:14px; }
+  .m-foot{ display:flex; align-items:center; justify-content:space-between; gap:6px; padding:8px 10px; border-top:1px solid var(--line); background:rgba(238,233,221,0.03); font-size:12px; color:#8b9490; }
+  .m-foot .acts{ display:flex; gap:6px; }
+  .icon-btn{ width:32px; height:32px; border-radius:8px; border:1px solid var(--line); background:transparent; color:#b7bcb6; cursor:pointer; font-size:14px; }
+  .icon-btn:hover{ color:#fff; border-color:#b7bcb6; }
+  .fight-btn{ background:var(--gold); color:var(--ink); border:none; border-radius:8px; padding:7px 12px; font-family:'Oswald', sans-serif; font-weight:600; font-size:13px; letter-spacing:0.04em; cursor:pointer; }
+  .podium-card{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+  .podium-card .pz{ display:flex; align-items:center; gap:8px; background:#0c1210; border:1px solid var(--line); border-radius:10px; padding:8px 12px; font-size:14px; }
+  .podium-card .pz b{ width:24px; height:24px; border-radius:50%; display:grid; place-items:center; color:var(--ink); font-size:12px; }
+  .pz.l1 b{ background:var(--gold); } .pz.l2 b{ background:#c7c7c7; } .pz.l3 b{ background:#cd8d5a; }
+  .saved{ font-size:12px; color:#8fd1a6; }
+
+  /* Marcador: nombres, correcciones y lados */
+  .side .comp-name{ font-family:'Bebas Neue', sans-serif; font-size:clamp(26px,4vw,46px); letter-spacing:0.02em; margin:34px 0 0; text-align:center; line-height:1; max-width:92%; }
+  .minus-row{ display:flex; gap:6px; }
+  .pen{ flex:1; display:flex; flex-direction:column; gap:6px; }
+  .pen .penalty-btn{ width:100%; }
+  .pen-minus{ background:none; border:1px solid currentColor; border-radius:8px; color:inherit; opacity:0.6; font-family:'Oswald', sans-serif; font-size:12px; letter-spacing:0.08em; padding:4px 0; cursor:pointer; }
+  .pen-minus:hover{ opacity:1; }
+  .arena.invertida #sideAka{ order:3; }
+  .arena.invertida .category-divider{ order:2; }
+  .arena.invertida #sideShiro{ order:1; }
+  .side.aka .competitor-label{ left:20px; right:auto; }
+  .side.shiro .competitor-label{ right:20px; left:auto; }
+  .arena.invertida .side.aka .competitor-label{ right:20px; left:auto; }
+  .arena.invertida .side.shiro .competitor-label{ left:20px; right:auto; }
+  .arena.invertida .side.aka .senshu{ left:20px; right:auto; }
+  .arena.invertida .side.shiro .senshu{ right:20px; left:auto; }
+  .ronda-info{ font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:var(--gold); text-align:center; }
+  .footer .primary-act{ color:var(--ink); background:var(--gold); border-radius:999px; padding:9px 16px; font-weight:600; }
+  .footer .primary-act:hover{ color:var(--ink); }
+  .footer{ flex-wrap:wrap; }
+
+  /* Pantalla de proyección: solo lectura */
+  body.proyeccion .site-banner, body.proyeccion .point-buttons, body.proyeccion .minus-row,
+  body.proyeccion .pen-minus, body.proyeccion .custom-time-row, body.proyeccion .timer-btn,
+  body.proyeccion .cat-btn, body.proyeccion .footer, body.proyeccion .cat-title{ display:none !important; }
+  body.proyeccion .penalty-btn, body.proyeccion .score, body.proyeccion .senshu{ pointer-events:none; }
+  body.proyeccion .proy-tools{ display:flex; }
+  .proy-tools{ display:none; position:fixed; right:12px; bottom:12px; gap:8px; z-index:30; opacity:0.25; transition:opacity .2s; }
+  .proy-tools:hover{ opacity:1; }
+
+  .modal.wide{ width:min(440px, 92vw); text-align:left; }
+  .radio-row{ display:flex; gap:8px; margin-bottom:14px; }
+  .radio-row label{ flex:1; display:flex; align-items:center; justify-content:center; gap:8px; border:1px solid var(--line); border-radius:10px; padding:10px; cursor:pointer; font-size:15px; }
+  .radio-row input{ accent-color:var(--gold); }
+  .warn{ font-size:13px; color:#ffd2cc; background:rgba(225,75,60,0.18); border-radius:10px; padding:10px 12px; margin:0 0 14px; }
+  .resumen{ font-size:14px; color:#b7bcb6; background:#0c1210; border-radius:10px; padding:10px 12px; margin-bottom:14px; line-height:1.6; }
+  .toast{ position:fixed; left:50%; bottom:24px; transform:translateX(-50%); background:var(--paper); color:var(--ink); padding:12px 18px; border-radius:12px; font-size:14px; z-index:80; max-width:calc(100% - 32px); }
 </style>
 </head>
 <body>
@@ -542,18 +665,57 @@
   <a class="banner-back" href="index.html">← Liga WUKF</a>
 </header>
 
+<!-- ================= ACCESO ================= -->
+<div class="screen active" id="screenGate">
+  <div class="wrap">
+    <p class="k-brand">Kumite <span>· WUKF</span></p>
+    <div class="k-card" id="gateCard"><p class="gate">Cargando…</p></div>
+  </div>
+</div>
+
+<!-- ================= CATEGORÍA Y LLAVE ================= -->
+<div class="screen" id="screenSetup">
+  <div class="wrap">
+    <p class="k-brand">Kumite <span>· WUKF</span></p>
+    <div class="fecha-pill" id="fechaPill">—</div>
+    <div class="k-card">
+      <label class="field" style="margin:0"><span>Categoría</span>
+        <select class="k-select" id="catSelect"><option value="">Elige una categoría…</option></select>
+      </label>
+    </div>
+
+    <div class="two-col" id="catBox" hidden>
+      <div class="k-card">
+        <h2>Competidores</h2>
+        <div class="list-tools"><span class="sub" id="presCount">—</span><button class="btn sm" id="addCompBtn" type="button">+ Agregar</button></div>
+        <ul class="k-list" id="nominaList"></ul>
+        <p class="sub" style="margin-top:12px">El orden de los presentes define la llave: 1 vs 2, 3 vs 4… Si sobran cupos, los primeros pasan directo.</p>
+        <p class="sub" id="resetBox" hidden style="margin-top:12px">Con combates guardados la nómina queda fija. Para cambiarla, reinicia la llave (borra los combates de esta categoría).
+          <button class="btn sm" id="resetLlave" type="button" style="margin-top:8px">Reiniciar llave</button></p>
+      </div>
+      <div class="k-card" id="podioCard" hidden><h2>Podio</h2><div class="podium-card" id="podio"></div></div>
+    </div>
+    <div class="k-card" id="llaveCard" hidden>
+      <h2>Llave</h2>
+      <div id="bracket" class="bracket"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= MARCADOR ================= -->
+<div class="screen" id="screenBoard">
   <div class="timer-bar">
     <div class="brand-row">
-      <span class="brand">WUKF · Kumite</span>
+      <span class="brand" id="boardCat">WUKF · Kumite</span>
       <span class="match-label" id="categoryLabel">Shobu Sanbon · 3 Ippon (6 Waza-ari)</span>
     </div>
     <div class="timer-core">
       <div class="clock-wrap">
-        <button class="timer-btn reset" id="resetBtn" title="Reiniciar tiempo">
+        <button class="timer-btn reset" id="resetBtn" title="Reiniciar tiempo" aria-label="Reiniciar tiempo">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 .49-9.36L1 10"></path></svg>
         </button>
         <div class="clock" id="clock">03:00</div>
-        <button class="timer-btn play" id="playBtn" title="Iniciar / Pausar">
+        <button class="timer-btn play" id="playBtn" title="Iniciar / Pausar" aria-label="Iniciar o pausar">
           <svg id="playIcon" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 3 20 12 6 21 6 3"></polygon></svg>
           <svg id="pauseIcon" viewBox="0 0 24 24" fill="currentColor" style="display:none"><rect x="5" y="3" width="5" height="18" rx="1"></rect><rect x="14" y="3" width="5" height="18" rx="1"></rect></svg>
         </button>
@@ -568,325 +730,625 @@
     </div>
   </div>
 
-  <div class="win-banner" id="winBanner">
-    <span id="winText"></span>
-    <button id="dismissBanner">✕</button>
-  </div>
+  <div class="win-banner" id="winBanner"><span id="winText"></span></div>
 
-  <div class="arena">
+  <div class="arena" id="arena">
     <div class="side aka" id="sideAka">
       <div class="competitor-label">Aka</div>
       <div class="senshu" id="senshuAka" title="Marcar Senshu">Senshu</div>
+      <div class="comp-name" id="nameAka"></div>
       <div class="score" id="scoreAka">0</div>
       <div class="score-target" id="targetAka">meta: 6</div>
       <div class="point-buttons">
-        <button class="pt-btn" data-side="aka" data-pts="1">
-          <span class="pt-name">Waza-ari</span><span class="pt-val">+1</span>
-        </button>
-        <button class="pt-btn" data-side="aka" data-pts="2">
-          <span class="pt-name">Ippon</span><span class="pt-val">+2</span>
-        </button>
+        <button class="pt-btn" data-side="aka" data-tipo="waza"><span class="pt-name">Waza-ari</span><span class="pt-val">+1</span></button>
+        <button class="pt-btn" data-side="aka" data-tipo="ippon"><span class="pt-name">Ippon</span><span class="pt-val">+2</span></button>
       </div>
       <div class="minus-row">
-        <button class="minus-btn" data-side="aka">− Corregir punto</button>
+        <button class="minus-btn" data-side="aka" data-tipo="waza">− Waza-ari</button>
+        <button class="minus-btn" data-side="aka" data-tipo="ippon">− Ippon</button>
       </div>
       <div class="penalty-block">
-        <button class="penalty-btn" data-side="aka" data-type="atenai">
-          <span class="penalty-label">Atenai</span>
-          <span class="dots" data-max="3"><i></i><i></i><i></i></span>
-        </button>
-        <button class="penalty-btn" data-side="aka" data-type="kinshi">
-          <span class="penalty-label">Kinshi</span>
-          <span class="dots" data-max="4"><i></i><i></i><i></i><i></i></span>
-        </button>
+        <div class="pen"><button class="penalty-btn" data-side="aka" data-type="atenai"><span class="penalty-label">Atenai</span><span class="dots" data-max="3"><i></i><i></i><i></i></span></button>
+          <button class="pen-minus" data-side="aka" data-type="atenai" aria-label="Restar Atenai a Aka">− Atenai</button></div>
+        <div class="pen"><button class="penalty-btn" data-side="aka" data-type="kinshi"><span class="penalty-label">Kinshi</span><span class="dots" data-max="4"><i></i><i></i><i></i><i></i></span></button>
+          <button class="pen-minus" data-side="aka" data-type="kinshi" aria-label="Restar Kinshi a Aka">− Kinshi</button></div>
       </div>
     </div>
 
     <div class="category-divider">
+      <span class="ronda-info" id="rondaInfo"></span>
       <span class="cat-title">Meta del combate</span>
       <button class="cat-btn" data-cat="nihon" data-target="4" data-label="Shobu Nihon · 2 Ippon (4 Waza-ari)">
-        <span class="cat-name">Shobu Nihon</span>
-        <span class="cat-sub">2 Ippon (4 Waza-ari) · Niños</span>
+        <span class="cat-name">Shobu Nihon</span><span class="cat-sub">2 Ippon (4 Waza-ari) · Niños</span>
       </button>
       <button class="cat-btn active" data-cat="sanbon" data-target="6" data-label="Shobu Sanbon · 3 Ippon (6 Waza-ari)">
-        <span class="cat-name">Shobu Sanbon</span>
-        <span class="cat-sub">3 Ippon (6 Waza-ari) · Estándar</span>
+        <span class="cat-name">Shobu Sanbon</span><span class="cat-sub">3 Ippon (6 Waza-ari) · Estándar</span>
       </button>
     </div>
 
     <div class="side shiro" id="sideShiro">
       <div class="competitor-label">Shiro</div>
       <div class="senshu" id="senshuShiro" title="Marcar Senshu">Senshu</div>
+      <div class="comp-name" id="nameShiro"></div>
       <div class="score" id="scoreShiro">0</div>
       <div class="score-target" id="targetShiro">meta: 6</div>
       <div class="point-buttons">
-        <button class="pt-btn" data-side="shiro" data-pts="1">
-          <span class="pt-name">Waza-ari</span><span class="pt-val">+1</span>
-        </button>
-        <button class="pt-btn" data-side="shiro" data-pts="2">
-          <span class="pt-name">Ippon</span><span class="pt-val">+2</span>
-        </button>
+        <button class="pt-btn" data-side="shiro" data-tipo="waza"><span class="pt-name">Waza-ari</span><span class="pt-val">+1</span></button>
+        <button class="pt-btn" data-side="shiro" data-tipo="ippon"><span class="pt-name">Ippon</span><span class="pt-val">+2</span></button>
       </div>
       <div class="minus-row">
-        <button class="minus-btn" data-side="shiro">− Corregir punto</button>
+        <button class="minus-btn" data-side="shiro" data-tipo="waza">− Waza-ari</button>
+        <button class="minus-btn" data-side="shiro" data-tipo="ippon">− Ippon</button>
       </div>
       <div class="penalty-block">
-        <button class="penalty-btn" data-side="shiro" data-type="atenai">
-          <span class="penalty-label">Atenai</span>
-          <span class="dots" data-max="3"><i></i><i></i><i></i></span>
-        </button>
-        <button class="penalty-btn" data-side="shiro" data-type="kinshi">
-          <span class="penalty-label">Kinshi</span>
-          <span class="dots" data-max="4"><i></i><i></i><i></i><i></i></span>
-        </button>
+        <div class="pen"><button class="penalty-btn" data-side="shiro" data-type="atenai"><span class="penalty-label">Atenai</span><span class="dots" data-max="3"><i></i><i></i><i></i></span></button>
+          <button class="pen-minus" data-side="shiro" data-type="atenai" aria-label="Restar Atenai a Shiro">− Atenai</button></div>
+        <div class="pen"><button class="penalty-btn" data-side="shiro" data-type="kinshi"><span class="penalty-label">Kinshi</span><span class="dots" data-max="4"><i></i><i></i><i></i><i></i></span></button>
+          <button class="pen-minus" data-side="shiro" data-type="kinshi" aria-label="Restar Kinshi a Shiro">− Kinshi</button></div>
       </div>
     </div>
   </div>
 
   <div class="footer">
-    <button id="newMatchBtn">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12a8 8 0 0 1 14.93-4"></path><path d="M20 4v5h-5"></path><path d="M20 12a8 8 0 0 1-14.93 4"></path><path d="M4 20v-5h5"></path></svg>
-      Nuevo combate
-    </button>
+    <button id="toBracketBtn" type="button">← Llave</button>
+    <button id="invertBtn" type="button">⇄ Invertir lados</button>
+    <button id="projBtn" type="button">▢ Pantalla de proyección</button>
+    <button id="saveBtn" class="primary-act" type="button">Guardar combate</button>
   </div>
+  <div class="proy-tools"><button class="btn sm" id="projInvert" type="button">⇄ Invertir lados</button><button class="btn sm" id="projFull" type="button">Pantalla completa</button></div>
+</div>
 
-  <div class="modal-backdrop" id="confirmModal">
-    <div class="modal">
-      <h3>¿Nuevo combate?</h3>
-      <p>Se reiniciarán los puntajes, castigos y el tiempo.</p>
-      <div class="modal-actions">
-        <button id="cancelReset">Cancelar</button>
-        <button class="confirm" id="confirmReset">Reiniciar</button>
-      </div>
+<!-- ================= MODALES ================= -->
+<div class="modal-backdrop" id="saveModal" role="dialog" aria-modal="true">
+  <div class="modal wide">
+    <h3 class="modal-title">Guardar combate</h3>
+    <div class="resumen" id="saveResumen"></div>
+    <div class="radio-row">
+      <label><input type="radio" name="ganador" value="Aka"> Gana Aka</label>
+      <label><input type="radio" name="ganador" value="Shiro"> Gana Shiro</label>
     </div>
+    <label class="field"><span>Forma de ganar</span>
+      <select id="saveForma"><option>Puntos</option><option>Senshu</option><option>Hansoku</option><option>Kiken</option><option>Hantei</option><option>Decisión de jueces</option></select>
+    </label>
+    <p class="warn" id="saveWarn" hidden></p>
+    <p class="form-error" id="saveError" hidden></p>
+    <div class="actions"><button class="btn" id="saveCancel" type="button">Cancelar</button><button class="btn primary" id="saveOk" type="button">Guardar</button></div>
   </div>
+</div>
 
+<div class="modal-backdrop" id="leaveModal">
+  <div class="modal">
+    <h3>¿Volver a la llave?</h3>
+    <p>El combate no está guardado. Se perderán los puntos y faltas registrados.</p>
+    <div class="modal-actions"><button id="leaveCancel">Seguir</button><button class="confirm" id="leaveOk">Salir</button></div>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="addModal" role="dialog" aria-modal="true">
+  <form class="modal wide" id="fAdd" novalidate>
+    <h3 class="modal-title">Agregar competidor</h3>
+    <p class="modal-text">Queda inscrito en esta categoría y marcado como presente.</p>
+    <div class="radio-row">
+      <label><input type="radio" name="modo" value="existe" checked> Ya registrado</label>
+      <label><input type="radio" name="modo" value="nuevo"> Nuevo</label>
+    </div>
+    <div id="modoExiste"><label class="field"><span>Competidor</span><select name="existe"></select></label></div>
+    <div id="modoNuevo" hidden>
+      <label class="field"><span>Nombre</span><input name="nombre" maxlength="60"></label>
+      <label class="field"><span>Apellido</span><input name="apellido" maxlength="60"></label>
+      <label class="field"><span>Sexo</span><select name="sexo"><option>Femenino</option><option>Masculino</option></select></label>
+      <label class="field"><span>Grado</span><select name="grado"></select></label>
+      <label class="field"><span>Fecha de nacimiento (opcional)</span><input type="date" name="nac"></label>
+    </div>
+    <p class="form-error" hidden></p>
+    <div class="actions"><button type="button" class="btn" id="addCancel">Cancelar</button><button type="submit" class="btn primary">Agregar</button></div>
+  </form>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.js"></script>
+<script src="liga.js"></script>
 <script>
 (function(){
-  // ---------- STATE ----------
-  let totalSeconds = 180;
-  let remaining = 180;
-  let running = false;
-  let tickHandle = null;
-  let lastTick = null;
+  const $ = (id) => document.getElementById(id);
+  const PROY = new URLSearchParams(location.search).get('vista') === 'proyeccion';
+  const canal = ('BroadcastChannel' in window) ? new BroadcastChannel('wukf-kumite') : null;
+  const guardarLocal = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} };
+  const leerLocal = (k) => { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } };
+  const toast = (t) => { const d = document.createElement('div'); d.className = 'toast'; d.textContent = t; document.body.appendChild(d); setTimeout(() => d.remove(), 3500); };
+  const showScreen = (id) => document.querySelectorAll('.screen').forEach(s => s.classList.toggle('active', s.id === id));
 
-  let category = 'sanbon';
-  let target = 6; // en unidades de waza-ari (ippon = 2, waza-ari = 1)
+  // ===================== MARCADOR (estado) =====================
+  let totalSeconds = 180, remaining = 180, running = false, tickHandle = null, lastTick = null;
+  let target = 6, categoryLabelText = 'Shobu Sanbon · 3 Ippon (6 Waza-ari)';
+  const vacio = () => ({ aka: { ippon: 0, waza: 0, atenai: 0, kinshi: 0 }, shiro: { ippon: 0, waza: 0, atenai: 0, kinshi: 0 } });
+  let m = vacio(), senshu = null, nombres = { aka: '', shiro: '' }, rondaTxt = '', catTxt = '';
+  let combate = null;   // combate de la llave que se está peleando
+  let sucio = false;    // hay cambios sin guardar
 
-  let scores = { aka:0, shiro:0 };
-  let penalties = {
-    aka:{ atenai:0, kinshi:0 },
-    shiro:{ atenai:0, kinshi:0 }
-  };
-  let senshu = { aka:false, shiro:false };
-  let winner = null;
+  const total = (s) => m[s].waza + 2 * m[s].ippon;
+  const otro = (s) => s === 'aka' ? 'shiro' : 'aka';
+  const NOMBRE = { aka: 'Aka', shiro: 'Shiro' };
 
-  // ---------- ELEMENTS ----------
-  const clockEl = document.getElementById('clock');
-  const playBtn = document.getElementById('playBtn');
-  const playIcon = document.getElementById('playIcon');
-  const pauseIcon = document.getElementById('pauseIcon');
-  const resetBtn = document.getElementById('resetBtn');
-  const categoryLabel = document.getElementById('categoryLabel');
-  const winBanner = document.getElementById('winBanner');
-  const winText = document.getElementById('winText');
-  const sideAkaEl = document.getElementById('sideAka');
-  const sideShiroEl = document.getElementById('sideShiro');
-
-  function formatTime(s){
-    const m = Math.floor(s/60);
-    const sec = s%60;
-    return String(m).padStart(2,'0') + ':' + String(sec).padStart(2,'0');
+  function ganadorActual(){
+    for (const s of ['aka', 'shiro']){
+      if (m[s].atenai >= 3 || m[s].kinshi >= 4) return { side: otro(s), forma: 'Hansoku', hansoku: s, motivo: `Hansoku a ${NOMBRE[s]}` };
+    }
+    if (total('aka') >= target) return { side: 'aka', forma: 'Puntos', motivo: `meta alcanzada (${total('aka')}/${target})` };
+    if (total('shiro') >= target) return { side: 'shiro', forma: 'Puntos', motivo: `meta alcanzada (${total('shiro')}/${target})` };
+    if (remaining <= 0){
+      if (total('aka') !== total('shiro')){ const s = total('aka') > total('shiro') ? 'aka' : 'shiro'; return { side: s, forma: 'Puntos', motivo: 'tiempo cumplido' }; }
+      if (senshu) return { side: senshu, forma: 'Senshu', motivo: 'empate con Senshu' };
+    }
+    return null;
   }
 
-  function renderClock(){
-    clockEl.textContent = formatTime(Math.max(0,remaining));
-    clockEl.classList.toggle('running', running);
-    clockEl.classList.toggle('low-time', remaining<=10 && remaining>0);
+  function formatTime(s){ return String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0'); }
+
+  function pintarMarcador(){
+    const clock = $('clock');
+    clock.textContent = formatTime(Math.max(0, remaining));
+    clock.classList.toggle('running', running);
+    clock.classList.toggle('low-time', remaining <= 10 && remaining > 0);
+    $('playIcon').style.display = running ? 'none' : 'block';
+    $('pauseIcon').style.display = running ? 'block' : 'none';
+    for (const s of ['aka', 'shiro']){
+      const S = s === 'aka' ? 'Aka' : 'Shiro';
+      $('score' + S).textContent = total(s);
+      $('target' + S).textContent = `meta: ${target} · ${m[s].ippon} Ippon · ${m[s].waza} Waza-ari`;
+      $('name' + S).textContent = nombres[s];
+      $('senshu' + S).classList.toggle('active', senshu === s);
+      document.querySelectorAll(`.penalty-btn[data-side="${s}"]`).forEach(b => {
+        const t = b.dataset.type, max = t === 'atenai' ? 3 : 4;
+        b.querySelectorAll('.dots i').forEach((d, i) => d.classList.toggle('filled', i < m[s][t]));
+        b.classList.toggle('critical', m[s][t] >= max);
+      });
+    }
+    $('categoryLabel').textContent = categoryLabelText;
+    $('boardCat').textContent = catTxt || 'WUKF · Kumite';
+    $('rondaInfo').textContent = rondaTxt;
+    document.querySelectorAll('.cat-btn').forEach(b => b.classList.toggle('active', Number(b.dataset.target) === target));
+    const g = ganadorActual();
+    $('sideAka').classList.toggle('winner', g?.side === 'aka');
+    $('sideShiro').classList.toggle('winner', g?.side === 'shiro');
+    $('winBanner').className = 'win-banner' + (g ? ' show ' + g.side : '');
+    $('winText').textContent = g ? `${nombres[g.side] || NOMBRE[g.side]} gana — ${g.motivo}` : '';
+    if (g && running && !PROY) pause();
+    emitir();
+  }
+
+  function emitir(){
+    if (PROY || !canal) return;
+    canal.postMessage({ tipo: 'estado', m, senshu, nombres, rondaTxt, catTxt, remaining, running, target, categoryLabelText });
   }
 
   function tick(ts){
-    if(!running) return;
-    if(lastTick==null) lastTick = ts;
-    const delta = (ts - lastTick)/1000;
-    if(delta >= 1){
+    if (!running) return;
+    if (lastTick == null) lastTick = ts;
+    const delta = (ts - lastTick) / 1000;
+    if (delta >= 1){
       const steps = Math.floor(delta);
       remaining = Math.max(0, remaining - steps);
-      lastTick = ts - (delta-steps)*1000;
-      renderClock();
-      if(remaining<=0){
-        pause();
-        clockEl.classList.remove('low-time');
-        return;
-      }
+      lastTick = ts - (delta - steps) * 1000;
+      if (remaining <= 0){ running = false; }
+      pintarMarcador();
+      if (!running) return;
     }
     tickHandle = requestAnimationFrame(tick);
   }
+  function play(){ if (remaining <= 0 || ganadorActual()) return; running = true; lastTick = null; tickHandle = requestAnimationFrame(tick); pintarMarcador(); }
+  function pause(){ running = false; if (tickHandle) cancelAnimationFrame(tickHandle); }
 
-  function play(){
-    if(remaining<=0) return;
-    running = true;
-    lastTick = null;
-    playIcon.style.display='none';
-    pauseIcon.style.display='block';
-    tickHandle = requestAnimationFrame(tick);
-    renderClock();
+  $('playBtn').addEventListener('click', () => { running ? (pause(), pintarMarcador()) : play(); });
+  $('resetBtn').addEventListener('click', () => { pause(); remaining = totalSeconds; pintarMarcador(); });
+  $('applyCustom').addEventListener('click', () => {
+    const min = Math.max(0, parseInt($('customMin').value, 10) || 0);
+    const sec = Math.max(0, Math.min(59, parseInt($('customSec').value, 10) || 0));
+    if (min * 60 + sec <= 0) return;
+    pause(); totalSeconds = remaining = min * 60 + sec; pintarMarcador();
+  });
+  document.querySelectorAll('.cat-btn').forEach(b => b.addEventListener('click', () => {
+    target = Number(b.dataset.target); categoryLabelText = b.dataset.label;
+    if (cat) guardarLocal(`kumite-meta-${cat.id}`, target);
+    pintarMarcador();
+  }));
+
+  // Puntos
+  const sumar = (s, tipo) => { if (ganadorActual()) return; m[s][tipo]++; sucio = true; pintarMarcador(); };
+  document.querySelectorAll('.pt-btn').forEach(b => b.addEventListener('click', () => sumar(b.dataset.side, b.dataset.tipo)));
+  $('scoreAka').addEventListener('click', () => sumar('aka', 'waza'));
+  $('scoreShiro').addEventListener('click', () => sumar('shiro', 'waza'));
+  document.querySelectorAll('.minus-btn').forEach(b => b.addEventListener('click', () => {
+    const s = b.dataset.side, t = b.dataset.tipo; if (m[s][t] > 0){ m[s][t]--; sucio = true; pintarMarcador(); }
+  }));
+  // Faltas: tocar suma, "−" resta (para corregir errores)
+  document.querySelectorAll('.penalty-btn').forEach(b => b.addEventListener('click', () => {
+    const s = b.dataset.side, t = b.dataset.type, max = t === 'atenai' ? 3 : 4;
+    if (m[s][t] < max){ m[s][t]++; sucio = true; pintarMarcador(); }
+  }));
+  document.querySelectorAll('.pen-minus').forEach(b => b.addEventListener('click', () => {
+    const s = b.dataset.side, t = b.dataset.type;
+    if (m[s][t] > 0){ m[s][t]--; sucio = true; pintarMarcador(); }
+  }));
+  $('senshuAka').addEventListener('click', () => { senshu = senshu === 'aka' ? null : 'aka'; sucio = true; pintarMarcador(); });
+  $('senshuShiro').addEventListener('click', () => { senshu = senshu === 'shiro' ? null : 'shiro'; sucio = true; pintarMarcador(); });
+
+  // Lados: cada pantalla recuerda su propia orientación
+  const claveLados = PROY ? 'kumite-lados-proyeccion' : 'kumite-lados-mesa';
+  let invertida = leerLocal(claveLados);
+  if (invertida === null) invertida = !PROY;   // mesa: Aka a la derecha; proyección: Aka a la izquierda
+  const aplicarLados = () => $('arena').classList.toggle('invertida', invertida);
+  const invertir = () => { invertida = !invertida; guardarLocal(claveLados, invertida); aplicarLados(); };
+  $('invertBtn').addEventListener('click', invertir);
+  $('projInvert').addEventListener('click', invertir);
+  $('projFull').addEventListener('click', () => document.documentElement.requestFullscreen?.());
+  $('projBtn').addEventListener('click', () => {
+    const w = window.open(location.pathname + '?vista=proyeccion', 'wukf-proyeccion', 'width=1280,height=720');
+    if (!w) toast('Permite las ventanas emergentes para abrir la pantalla de proyección');
+    setTimeout(emitir, 800);
+  });
+  aplicarLados();
+
+  // ===================== MODO PROYECCIÓN =====================
+  if (PROY){
+    document.body.classList.add('proyeccion');
+    document.title = 'Proyección Kumite — WUKF';
+    showScreen('screenBoard');
+    if (canal){
+      canal.onmessage = (e) => {
+        const d = e.data; if (d.tipo !== 'estado') return;
+        m = d.m; senshu = d.senshu; nombres = d.nombres; rondaTxt = d.rondaTxt; catTxt = d.catTxt;
+        remaining = d.remaining; running = d.running; target = d.target; categoryLabelText = d.categoryLabelText;
+        pintarMarcador();
+      };
+      canal.postMessage({ tipo: 'pedir' });
+    }
+    pintarMarcador();
+    return;
   }
-  function pause(){
-    running = false;
-    playIcon.style.display='block';
-    pauseIcon.style.display='none';
-    if(tickHandle) cancelAnimationFrame(tickHandle);
-    renderClock();
+  if (canal) canal.onmessage = (e) => { if (e.data.tipo === 'pedir') emitir(); };
+
+  // ===================== MESA: ACCESO =====================
+  let fecha = null, categorias = [], grados = [], cat = null, nomina = [], st = null;
+
+  async function iniciar(){
+    const staff = await sesionStaff().catch(() => null);
+    if (!staff){
+      formLogin($('gateCard'), () => iniciar(), { texto: 'La mesa de Kumite guarda cada combate en la base de la liga. Ingresa con la cuenta de mesa o administrador.' });
+      return;
+    }
+    $('gateCard').innerHTML = '<p class="gate">Cargando…</p>';
+    const { data: f, error } = await sb.from('fechas').select('id, numero, dia').not('inicio', 'is', null).is('cierre', null).maybeSingle();
+    if (error){ $('gateCard').innerHTML = `<p class="gate">${esc(mensajeError(error))}</p>`; return; }
+    if (!f){ $('gateCard').innerHTML = '<p class="gate">No hay una fecha en curso.<br>Iníciala desde la <a href="index.html">pantalla de inicio</a> para registrar combates.</p>'; return; }
+    fecha = f;
+    const [c, g] = await Promise.all([
+      sb.from('categorias').select('id, nombre, codigo').eq('fecha_id', f.id).eq('modalidad', 'Kumite').order('codigo'),
+      sb.from('grados').select('orden, nombre').order('orden')
+    ]);
+    categorias = c.data || []; grados = g.data || [];
+    $('fechaPill').textContent = `Fecha ${f.numero}` + (f.dia ? ` · ${diaLargo(f.dia)}` : '');
+    $('catSelect').innerHTML = categorias.length
+      ? '<option value="">Elige una categoría…</option>' + categorias.map(x => `<option value="${x.id}">${esc(x.nombre)}</option>`).join('')
+      : '<option value="">Esta fecha no tiene categorías de Kumite</option>';
+    showScreen('screenSetup');
   }
 
-  playBtn.addEventListener('click', ()=> running ? pause() : play());
-  resetBtn.addEventListener('click', ()=>{ pause(); remaining = totalSeconds; renderClock(); });
-
-  document.getElementById('applyCustom').addEventListener('click', ()=>{
-    const min = Math.max(0, parseInt(document.getElementById('customMin').value,10) || 0);
-    const sec = Math.max(0, Math.min(59, parseInt(document.getElementById('customSec').value,10) || 0));
-    const secs = min*60+sec;
-    if(secs<=0) return;
-    pause();
-    totalSeconds = secs;
-    remaining = secs;
-    renderClock();
+  // ===================== NÓMINA =====================
+  $('catSelect').addEventListener('change', () => {
+    cat = categorias.find(x => x.id === Number($('catSelect').value)) || null;
+    $('catBox').hidden = !cat; $('llaveCard').hidden = !cat;
+    if (cat) cargarNomina();
   });
 
-  // ---------- CATEGORY (Shobu Nihon / Shobu Sanbon) ----------
-  document.querySelectorAll('.cat-btn').forEach(btn=>{
-    btn.addEventListener('click', ()=>{
-      document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('active'));
-      btn.classList.add('active');
-      category = btn.dataset.cat;
-      target = parseInt(btn.dataset.target,10);
-      categoryLabel.textContent = btn.dataset.label;
-      document.getElementById('targetAka').textContent = 'meta: ' + target;
-      document.getElementById('targetShiro').textContent = 'meta: ' + target;
-      checkWinner();
-    });
-  });
-
-  // ---------- SCORES ----------
-  const scoreEls = { aka: document.getElementById('scoreAka'), shiro: document.getElementById('scoreShiro') };
-
-  function renderScore(side){
-    scoreEls[side].textContent = scores[side];
+  async function cargarNomina(){
+    $('nominaList').innerHTML = '<li>Cargando…</li>';
+    const { data, error } = await sb.from('inscripciones').select('id, presente, competidor_id, competidores(nombre, apellido)').eq('categoria_id', cat.id);
+    if (error){ $('nominaList').innerHTML = `<li>${esc(mensajeError(error))}</li>`; return; }
+    nomina = data.map(i => ({ insId: i.id, compId: i.competidor_id, presente: i.presente, nombre: `${i.competidores.nombre} ${i.competidores.apellido}`, apellido: i.competidores.apellido }))
+      .sort((a, b) => a.apellido.localeCompare(b.apellido, 'es'));
+    // Estado de la llave: el guardado en la base manda; si no hay, el de este dispositivo
+    const [ll, cb] = await Promise.all([
+      sb.from('categorias').select('llave').eq('id', cat.id).single(),
+      sb.from('kumite_combates').select('id').eq('categoria_id', cat.id)
+    ]);
+    st = (ll.data && ll.data.llave) || leerLocal(`kumite-llave-${cat.id}`) || { orden: [], ov: {}, res: {} };
+    st.ov = st.ov || {}; st.res = st.res || {}; st.orden = st.orden || [];
+    const vivos = new Set((cb.data || []).map(r => r.id));
+    Object.keys(st.res).forEach(k => { if (!vivos.has(st.res[k].dbId)) delete st.res[k]; });
+    const pres = nomina.filter(n => n.presente).map(n => n.compId);
+    st.orden = st.orden.filter(id => pres.includes(id)).concat(pres.filter(id => !st.orden.includes(id)));
+    guardarSt(); pintarNomina(); pintarLlave();
   }
-
-  function otherSide(side){ return side === 'aka' ? 'shiro' : 'aka'; }
-
-  function declareWinner(side, reasonText){
-    if(winner) return;
-    winner = side;
-    pause();
-    document.getElementById(side === 'aka' ? 'sideAka' : 'sideShiro').classList.add('winner');
-    winBanner.className = 'win-banner show ' + side;
-    winText.textContent = (side === 'aka' ? 'AKA GANA' : 'SHIRO GANA') + ' — ' + reasonText;
-  }
-
-  function checkWinner(){
-    if(winner) return;
-    if(scores.aka >= target){ declareWinner('aka', 'meta alcanzada (' + scores.aka + '/' + target + ')'); }
-    else if(scores.shiro >= target){ declareWinner('shiro', 'meta alcanzada (' + scores.shiro + '/' + target + ')'); }
-  }
-
-  document.querySelectorAll('.pt-btn').forEach(btn=>{
-    btn.addEventListener('click', ()=>{
-      if(winner) return;
-      const side = btn.dataset.side;
-      const pts = parseInt(btn.dataset.pts,10);
-      scores[side]+=pts;
-      renderScore(side);
-      checkWinner();
-    });
-  });
-
-  document.querySelectorAll('.minus-btn').forEach(btn=>{
-    btn.addEventListener('click', ()=>{
-      const side = btn.dataset.side;
-      scores[side] = Math.max(0, scores[side]-1);
-      renderScore(side);
-    });
-  });
-
-  // tap the big number itself = +1 (waza-ari) rápido
-  scoreEls.aka.addEventListener('click', ()=>{ if(winner) return; scores.aka++; renderScore('aka'); checkWinner(); });
-  scoreEls.shiro.addEventListener('click', ()=>{ if(winner) return; scores.shiro++; renderScore('shiro'); checkWinner(); });
-
-  // ---------- PENALTIES (Atenai / Kinshi) ----------
-  const PENALTY_LABELS = {
-    atenai: ['Atenai', 'Atenai Chui', 'Atenai Hansoku'],
-    kinshi: ['Kinshi', 'Kinshi Ni', 'Kinshi Chui', 'Kinshi Hansoku']
+  let llaveTimer = null;
+  const guardarSt = () => {
+    guardarLocal(`kumite-llave-${cat.id}`, st);
+    const id = cat.id, copia = JSON.parse(JSON.stringify(st));
+    clearTimeout(llaveTimer);
+    llaveTimer = setTimeout(async () => {
+      const { error } = await sb.rpc('guardar_llave', { p_categoria_id: id, p_llave: copia });
+      if (error) toast('No se pudo guardar la llave en la base: ' + mensajeError(error));
+    }, 300);
   };
+  const nom = (compId) => nomina.find(n => n.compId === compId)?.nombre || '';
+  const hayResultados = () => Object.keys(st.res).length > 0;
 
-  document.querySelectorAll('.penalty-btn').forEach(btn=>{
-    btn.addEventListener('click', ()=>{
-      if(winner) return;
-      const side = btn.dataset.side;
-      const type = btn.dataset.type;
-      const dotsEl = btn.querySelector('.dots');
-      const max = parseInt(dotsEl.dataset.max,10);
-      if(penalties[side][type] >= max) return;
-      penalties[side][type]++;
-      const count = penalties[side][type];
-      dotsEl.querySelectorAll('i').forEach((dot,i)=>{
-        dot.classList.toggle('filled', i < count);
-      });
-      if(count >= max){
-        btn.classList.add('critical');
-        const label = PENALTY_LABELS[type][max-1];
-        declareWinner(otherSide(side), 'descalificación (' + label + ' en ' + (side==='aka'?'Aka':'Shiro') + ')');
-      }
-    });
+  function pintarNomina(){
+    const pres = st.orden.map(id => nomina.find(n => n.compId === id)).filter(Boolean);
+    const aus = nomina.filter(n => !n.presente);
+    const bloq = hayResultados();
+    const sw = (n) => `<label class="switch" title="${n.presente ? 'Presente' : 'Ausente'}"><input type="checkbox" data-ins="${n.insId}" ${n.presente ? 'checked' : ''} ${bloq ? 'disabled' : ''} aria-label="Presente: ${esc(n.nombre)}"><span class="track"></span></label>`;
+    $('nominaList').innerHTML = pres.map((n, i) => `<li><span class="seed">${i + 1}</span><span class="nm">${esc(n.nombre)}</span>
+      <span class="ord"><button type="button" data-up="${i}" ${i === 0 || bloq ? 'disabled' : ''} aria-label="Subir">▲</button><button type="button" data-down="${i}" ${i === pres.length - 1 || bloq ? 'disabled' : ''} aria-label="Bajar">▼</button></span>${sw(n)}</li>`).join('')
+      + aus.map(n => `<li class="aus"><span class="seed" style="background:#3a423e;color:#8b9490">–</span><span class="nm">${esc(n.nombre)}</span>${sw(n)}</li>`).join('');
+    $('presCount').textContent = `${pres.length} presentes · ${aus.length} ausentes` + (bloq ? ' · llave en curso' : '');
+    $('addCompBtn').disabled = bloq; $('resetBox').hidden = !bloq;
+    $('resetLlave').textContent = 'Reiniciar llave'; delete $('resetLlave').dataset.confirmar;
+  }
+
+  $('nominaList').addEventListener('click', (e) => {
+    const b = e.target.closest('[data-up],[data-down]'); if (!b) return;
+    const i = Number(b.dataset.up ?? b.dataset.down), j = b.dataset.up !== undefined ? i - 1 : i + 1;
+    [st.orden[i], st.orden[j]] = [st.orden[j], st.orden[i]]; st.ov = {};
+    guardarSt(); pintarNomina(); pintarLlave();
+  });
+  $('nominaList').addEventListener('change', async (e) => {
+    const cb = e.target.closest('input[data-ins]'); if (!cb) return;
+    const n = nomina.find(x => x.insId === Number(cb.dataset.ins)); const v = cb.checked;
+    cb.disabled = true;
+    const { error } = await sb.from('inscripciones').update({ presente: v }).eq('id', n.insId);
+    cb.disabled = false;
+    if (error){ cb.checked = !v; toast(mensajeError(error)); return; }
+    n.presente = v;
+    st.orden = v ? st.orden.concat(n.compId) : st.orden.filter(id => id !== n.compId);
+    st.ov = {}; guardarSt(); pintarNomina(); pintarLlave();
   });
 
-  // ---------- SENSHU ----------
-  const senshuAka = document.getElementById('senshuAka');
-  const senshuShiro = document.getElementById('senshuShiro');
-  senshuAka.addEventListener('click', ()=>{
-    senshu.aka = !senshu.aka;
-    if(senshu.aka){ senshu.shiro=false; senshuShiro.classList.remove('active'); }
-    senshuAka.classList.toggle('active', senshu.aka);
-  });
-  senshuShiro.addEventListener('click', ()=>{
-    senshu.shiro = !senshu.shiro;
-    if(senshu.shiro){ senshu.aka=false; senshuAka.classList.remove('active'); }
-    senshuShiro.classList.toggle('active', senshu.shiro);
-  });
-
-  // ---------- WIN BANNER DISMISS ----------
-  document.getElementById('dismissBanner').addEventListener('click', ()=>{
-    winBanner.classList.remove('show');
+  $('resetLlave').addEventListener('click', async () => {
+    const b = $('resetLlave');
+    if (!b.dataset.confirmar){ b.dataset.confirmar = '1'; b.textContent = '¿Seguro? Toca otra vez para borrar'; return; }
+    b.disabled = true;
+    const ids = Object.values(st.res).map(r => r.dbId).filter(Boolean);
+    if (ids.length){
+      const { error } = await sb.from('kumite_combates').delete().in('id', ids);
+      if (error){ b.disabled = false; toast(mensajeError(error)); return; }
+    }
+    st = { orden: st.orden, ov: {}, res: {} }; guardarSt();
+    await guardarPodio(); b.disabled = false;
+    pintarNomina(); pintarLlave(); toast('Llave reiniciada');
   });
 
-  // ---------- NEW MATCH ----------
-  const modal = document.getElementById('confirmModal');
-  document.getElementById('newMatchBtn').addEventListener('click', ()=> modal.classList.add('open'));
-  document.getElementById('cancelReset').addEventListener('click', ()=> modal.classList.remove('open'));
-  document.getElementById('confirmReset').addEventListener('click', ()=>{
-    pause();
-    scores = {aka:0, shiro:0};
-    renderScore('aka'); renderScore('shiro');
-    penalties = { aka:{atenai:0,kinshi:0}, shiro:{atenai:0,kinshi:0} };
-    document.querySelectorAll('.penalty-btn').forEach(btn=>{
-      btn.classList.remove('critical');
-      btn.querySelectorAll('.dots i').forEach(dot=>dot.classList.remove('filled'));
-    });
-    senshu = {aka:false, shiro:false};
-    senshuAka.classList.remove('active');
-    senshuShiro.classList.remove('active');
-    winner = null;
-    sideAkaEl.classList.remove('winner');
-    sideShiroEl.classList.remove('winner');
-    winBanner.classList.remove('show');
-    remaining = totalSeconds;
-    renderClock();
-    modal.classList.remove('open');
+  // ===================== LLAVE =====================
+  function nombreRonda(r, R){
+    const d = R - 1 - r;
+    return d === 0 ? 'Final' : d === 1 ? 'Semifinal' : d === 2 ? 'Cuartos' : d === 3 ? 'Octavos' : 'Primera ronda';
+  }
+  function construir(){
+    const seeds = st.orden.slice(), N = seeds.length;
+    if (N < 2) return { rondas: [], R: 0, p3: null, tercero: null };
+    let size = 1; while (size < N) size *= 2;
+    const byes = size - N, R = Math.log2(size), rondas = [];
+    const nuevo = (r, i, a, b) => {
+      const id = `r${r}m${i}`, ov = st.ov[id], res = st.res[id];
+      let aka = a, shiro = b;
+      if (res){ aka = res.aka; shiro = res.shiro; }
+      else if (ov){ aka = ov.aka !== undefined ? ov.aka : a; shiro = ov.shiro !== undefined ? ov.shiro : b; }
+      return { id, r, i, aka, shiro, res, ronda: nombreRonda(r, R) };
+    };
+    const r0 = []; let k = 0;
+    for (let i = 0; i < size / 2; i++){
+      if (i < byes) r0.push(nuevo(0, i, seeds[k++], 'BYE'));
+      else { r0.push(nuevo(0, i, seeds[k], seeds[k + 1])); k += 2; }
+    }
+    rondas.push(r0);
+    for (let r = 1; r < R; r++){
+      const prev = rondas[r - 1], cur = [];
+      for (let i = 0; i < prev.length / 2; i++) cur.push(nuevo(r, i, ganador(prev[2 * i]), ganador(prev[2 * i + 1])));
+      rondas.push(cur);
+    }
+    let p3 = null, tercero = null;
+    if (R >= 2){
+      const semis = rondas[R - 2].filter(x => x.aka !== 'BYE' && x.shiro !== 'BYE');
+      if (semis.length === 2){
+        const a = perdedor(semis[0]), b = perdedor(semis[1]);
+        p3 = nuevo(99, 0, a, b); p3.id = 'p3'; p3.ronda = 'Por 3er lugar';
+        const res = st.res.p3, ov = st.ov.p3;
+        if (res){ p3.aka = res.aka; p3.shiro = res.shiro; p3.res = res; }
+        else if (ov){ if (ov.aka !== undefined) p3.aka = ov.aka; if (ov.shiro !== undefined) p3.shiro = ov.shiro; p3.res = null; }
+        else p3.res = null;
+      } else if (semis.length === 1) tercero = perdedor(semis[0]);
+    }
+    return { rondas, R, p3, tercero };
+  }
+  function ganador(x){
+    if (x.shiro === 'BYE') return x.aka ?? null;
+    if (x.aka === 'BYE') return x.shiro ?? null;
+    if (x.res) return x.res.ganador === 'Aka' ? x.res.aka : x.res.shiro;
+    return null;
+  }
+  function perdedor(x){
+    if (!x.res) return null;
+    return x.res.ganador === 'Aka' ? x.res.shiro : x.res.aka;
+  }
+  const listo = (x) => x.aka && x.shiro && x.aka !== 'BYE' && x.shiro !== 'BYE';
+
+  let editando = null;
+  function pintarLlave(){
+    const L = construir();
+    if (!L.rondas.length){ $('bracket').innerHTML = '<p class="sub">Marca al menos dos presentes para armar la llave.</p>'; $('podioCard').hidden = true; return; }
+    const todos = L.rondas.flat().concat(L.p3 ? [L.p3] : []);
+    const proximo = todos.find(x => listo(x) && !x.res);
+    const opciones = (sel) => '<option value="">—</option>' + st.orden.map(id => `<option value="${id}" ${id === sel ? 'selected' : ''}>${esc(nom(id))}</option>`).join('');
+    const slot = (x, lado) => {
+      const v = x[lado], cls = lado === 'aka' ? 'aka' : 'shiro';
+      const gan = x.res ? (x.res.ganador === 'Aka' ? 'aka' : 'shiro') : null;
+      const estado = gan ? (gan === lado ? ' win' : ' lose') : '';
+      if (editando === x.id) return `<div class="slot ${cls}"><i></i><select data-slot="${lado}" aria-label="${lado === 'aka' ? 'Aka' : 'Shiro'}">${opciones(v)}</select></div>`;
+      const txt = v === 'BYE' ? '<span class="who vacio">pasa directo</span>' : v ? `<span class="who">${esc(nom(v))}</span>` : '<span class="who vacio">por definir</span>';
+      return `<div class="slot ${cls}${estado}"><i></i>${txt}</div>`;
+    };
+    const tarjeta = (x) => {
+      const bye = x.aka === 'BYE' || x.shiro === 'BYE';
+      let pie = '';
+      if (editando === x.id) pie = `<span>Editar combate</span><span class="acts"><button class="btn sm" data-accion="okedit" data-id="${x.id}">Listo</button></span>`;
+      else if (bye) pie = '<span>Pasa directo</span>';
+      else if (x.res) pie = `<span>${esc(x.res.forma)}</span><span class="acts"><button class="icon-btn" data-accion="repetir" data-id="${x.id}" title="Volver a pelear" aria-label="Volver a pelear">↺</button></span>`;
+      else pie = `<span></span><span class="acts"><button class="icon-btn" data-accion="swap" data-id="${x.id}" title="Cambiar Aka y Shiro" aria-label="Cambiar Aka y Shiro">⇄</button><button class="icon-btn" data-accion="editar" data-id="${x.id}" title="Editar competidores" aria-label="Editar competidores">✎</button>${listo(x) ? `<button class="fight-btn" data-accion="pelear" data-id="${x.id}">Pelear</button>` : ''}</span>`;
+      return `<div class="match${proximo && proximo.id === x.id ? ' next' : ''}">${slot(x, 'aka')}${slot(x, 'shiro')}<div class="m-foot">${pie}</div></div>`;
+    };
+    const columna = (r) => {
+      const byes = r.filter(x => x.aka === 'BYE' || x.shiro === 'BYE').map(x => x.aka === 'BYE' ? x.shiro : x.aka).filter(Boolean);
+      const reales = r.filter(x => x.aka !== 'BYE' && x.shiro !== 'BYE');
+      return `<div class="round"><h3>${esc(r[0].ronda)}</h3>${byes.length ? `<p class="byes">Pasan directo: <b>${byes.map(id => esc(nom(id))).join(', ')}</b></p>` : ''}<div class="matches">${reales.map(tarjeta).join('')}</div></div>`;
+    };
+    $('bracket').innerHTML = L.rondas.map(columna).join('')
+      + (L.p3 ? `<div class="round"><h3>Por 3er lugar</h3><div class="matches">${tarjeta(L.p3)}</div></div>` : '');
+    $('bracket').querySelectorAll('select[data-slot]').forEach(s => s.addEventListener('change', () => {
+      const id = s.closest('.match').querySelector('[data-accion="okedit"]').dataset.id;
+      st.ov[id] = st.ov[id] || {}; st.ov[id][s.dataset.slot] = s.value ? Number(s.value) : null; guardarSt();
+    }));
+    pintarPodio(L);
+    return L;
+  }
+
+  function podioDe(L){
+    const fin = L.rondas[L.R - 1][0], p = {};
+    if (fin.res){ p[1] = ganador(fin); p[2] = perdedor(fin); }
+    if (L.p3 && L.p3.res) p[3] = ganador(L.p3);
+    if (L.tercero) p[3] = L.tercero;
+    return p;
+  }
+  function pintarPodio(L){
+    const p = podioDe(L);
+    $('podioCard').hidden = !p[1];
+    $('podio').innerHTML = [1, 2, 3].filter(l => p[l]).map(l => `<span class="pz l${l}"><b>${l}</b>${esc(nom(p[l]))}</span>`).join('')
+      + (L.p3 && !L.p3.res && p[1] ? '<span class="sub">Falta la pelea por el 3er lugar</span>' : '') + '<span class="saved" id="podioGuardado"></span>';
+  }
+  async function guardarPodio(){
+    const L = construir(), p = podioDe(L), lugarDe = {};
+    [1, 2, 3].forEach(l => { if (p[l]) lugarDe[p[l]] = l; });
+    const res = await Promise.all(nomina.map(n => sb.from('inscripciones').update({ lugar: (n.presente && lugarDe[n.compId]) || null }).eq('id', n.insId)));
+    const fallo = res.find(r => r.error);
+    if ($('podioGuardado')) $('podioGuardado').textContent = fallo ? '' : (p[1] ? 'Guardado en la tabla general ✓' : '');
+    if (fallo) toast('No se pudo guardar el podio: ' + mensajeError(fallo.error));
+  }
+
+  $('bracket').addEventListener('click', (e) => {
+    const b = e.target.closest('[data-accion]'); if (!b) return;
+    const id = b.dataset.id, L = construir(), x = L.rondas.flat().concat(L.p3 ? [L.p3] : []).find(y => y.id === id);
+    const acc = b.dataset.accion;
+    if (acc === 'swap'){ st.ov[id] = { aka: x.shiro, shiro: x.aka }; guardarSt(); pintarLlave(); }
+    if (acc === 'editar'){ editando = id; pintarLlave(); }
+    if (acc === 'okedit'){ editando = null; pintarLlave(); }
+    if (acc === 'pelear' || acc === 'repetir') abrirCombate(x);
   });
 
-  renderClock();
+  // ===================== COMBATE =====================
+  function abrirCombate(x){
+    combate = { id: x.id, ronda: x.ronda, aka: x.aka, shiro: x.shiro, dbId: x.res?.dbId || null, orden: x.res?.orden || null };
+    m = vacio(); senshu = null; sucio = false;
+    nombres = { aka: nom(x.aka), shiro: nom(x.shiro) };
+    rondaTxt = x.ronda; catTxt = cat.nombre;
+    const meta = leerLocal(`kumite-meta-${cat.id}`);
+    if (meta){ target = meta; categoryLabelText = document.querySelector(`.cat-btn[data-target="${meta}"]`).dataset.label; }
+    pause(); remaining = totalSeconds;
+    showScreen('screenBoard'); document.querySelector('.site-banner').hidden = true;
+    pintarMarcador(); window.scrollTo(0, 0);
+  }
+  function volverLlave(){
+    pause(); combate = null; nombres = { aka: '', shiro: '' }; rondaTxt = ''; m = vacio(); senshu = null;
+    pintarMarcador(); document.querySelector('.site-banner').hidden = false;
+    showScreen('screenSetup'); pintarNomina(); pintarLlave();
+  }
+  $('toBracketBtn').addEventListener('click', () => sucio ? $('leaveModal').classList.add('open') : volverLlave());
+  $('leaveCancel').addEventListener('click', () => $('leaveModal').classList.remove('open'));
+  $('leaveOk').addEventListener('click', () => { $('leaveModal').classList.remove('open'); volverLlave(); });
+
+  $('saveBtn').addEventListener('click', () => {
+    pause(); pintarMarcador();
+    const g = ganadorActual();
+    $('saveResumen').innerHTML = `<b>${esc(rondaTxt)}</b><br>
+      <span style="color:#ff8c86">Aka</span> ${esc(nombres.aka)}: ${total('aka')} pts · ${m.aka.ippon} Ippon · ${m.aka.waza} Waza-ari · Atenai ${m.aka.atenai} · Kinshi ${m.aka.kinshi}<br>
+      Shiro ${esc(nombres.shiro)}: ${total('shiro')} pts · ${m.shiro.ippon} Ippon · ${m.shiro.waza} Waza-ari · Atenai ${m.shiro.atenai} · Kinshi ${m.shiro.kinshi}`;
+    document.querySelectorAll('input[name=ganador]').forEach(r => r.checked = g ? r.value === NOMBRE[g.side] : false);
+    $('saveForma').value = g ? g.forma : (total('aka') === total('shiro') ? 'Hantei' : 'Puntos');
+    const hs = ['aka', 'shiro'].filter(s => m[s].atenai >= 3 || m[s].kinshi >= 4);
+    $('saveWarn').hidden = !hs.length;
+    $('saveWarn').textContent = hs.length ? `Hansoku a ${hs.map(s => nombres[s]).join(' y ')}: según el reglamento de la liga, queda fuera de la temporada.` : '';
+    $('saveError').hidden = true;
+    $('saveModal').classList.add('open');
+  });
+  $('saveCancel').addEventListener('click', () => $('saveModal').classList.remove('open'));
+  $('saveOk').addEventListener('click', async () => {
+    const gan = document.querySelector('input[name=ganador]:checked')?.value;
+    if (!gan){ $('saveError').textContent = 'Elige quién gana el combate.'; $('saveError').hidden = false; return; }
+    const hs = ['aka', 'shiro'].filter(s => m[s].atenai >= 3 || m[s].kinshi >= 4);
+    const orden = combate.orden || (Object.values(st.res).reduce((a, r) => Math.max(a, r.orden || 0), 0) + 1);
+    const fila = {
+      categoria_id: cat.id, orden, ronda: combate.ronda, aka_id: combate.aka, shiro_id: combate.shiro,
+      aka_ippon: m.aka.ippon, aka_wazaari: m.aka.waza, aka_atenai: m.aka.atenai, aka_kinshi: m.aka.kinshi,
+      shiro_ippon: m.shiro.ippon, shiro_wazaari: m.shiro.waza, shiro_atenai: m.shiro.atenai, shiro_kinshi: m.shiro.kinshi,
+      ganador: gan, forma: $('saveForma').value, hansoku_a: hs.length === 1 ? NOMBRE[hs[0]] : null
+    };
+    $('saveOk').disabled = true; $('saveOk').textContent = 'Guardando…';
+    const q = combate.dbId ? sb.from('kumite_combates').update(fila).eq('id', combate.dbId).select('id').single()
+                           : sb.from('kumite_combates').insert(fila).select('id').single();
+    const { data, error } = await q;
+    $('saveOk').disabled = false; $('saveOk').textContent = 'Guardar';
+    if (error){ $('saveError').textContent = mensajeError(error); $('saveError').hidden = false; return; }
+    // Si al volver a pelear cambia el ganador, se anulan los combates posteriores de esos competidores
+    const previo = st.res[combate.id];
+    if (previo && previo.ganador !== gan){
+      const afectados = [previo.aka, previo.shiro];
+      const anular = Object.keys(st.res).filter(k => k !== combate.id && st.res[k].orden > orden &&
+        (afectados.includes(st.res[k].aka) || afectados.includes(st.res[k].shiro)));
+      for (const k of anular){ await sb.from('kumite_combates').delete().eq('id', st.res[k].dbId); delete st.res[k]; }
+      if (anular.length) toast(`Se anularon ${anular.length} combate(s) posteriores que dependían de este resultado`);
+    }
+    st.res[combate.id] = { ganador: gan, forma: fila.forma, aka: combate.aka, shiro: combate.shiro, dbId: data.id, orden };
+    guardarSt(); sucio = false;
+    $('saveModal').classList.remove('open');
+    toast(`Combate guardado: gana ${gan === 'Aka' ? nombres.aka : nombres.shiro}`);
+    volverLlave();
+    guardarPodio();
+  });
+
+  // ===================== AGREGAR COMPETIDOR =====================
+  const fAdd = $('fAdd');
+  fAdd.querySelectorAll('input[name=modo]').forEach(r => r.addEventListener('change', () => {
+    $('modoExiste').hidden = fAdd.modo.value !== 'existe'; $('modoNuevo').hidden = fAdd.modo.value !== 'nuevo';
+  }));
+  $('addCompBtn').addEventListener('click', async () => {
+    const { data } = await sb.from('competidores').select('id, nombre, apellido').eq('activo', true).order('apellido');
+    const ya = new Set(nomina.map(n => n.compId)), libres = (data || []).filter(c => !ya.has(c.id));
+    fAdd.reset();
+    fAdd.existe.innerHTML = libres.length ? libres.map(c => `<option value="${c.id}">${esc(c.apellido)}, ${esc(c.nombre)}</option>`).join('') : '<option value="">No hay más competidores registrados</option>';
+    fAdd.grado.innerHTML = grados.map(g => `<option value="${g.orden}">${esc(g.nombre)}</option>`).join('');
+    $('modoExiste').hidden = false; $('modoNuevo').hidden = true; fAdd.querySelector('.form-error').hidden = true;
+    $('addModal').classList.add('open');
+  });
+  $('addCancel').addEventListener('click', () => $('addModal').classList.remove('open'));
+  fAdd.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const err = fAdd.querySelector('.form-error'), ok = fAdd.querySelector('[type=submit]');
+    const falla = (t) => { err.textContent = t; err.hidden = false; ok.disabled = false; };
+    ok.disabled = true; err.hidden = true;
+    let compId = Number(fAdd.existe.value);
+    if (fAdd.modo.value === 'nuevo'){
+      const nombre = fAdd.nombre.value.trim(), apellido = fAdd.apellido.value.trim();
+      if (!nombre || !apellido) return falla('Nombre y apellido son obligatorios.');
+      const { data, error } = await sb.from('competidores').insert({ nombre, apellido, sexo: fAdd.sexo.value, grado_actual: Number(fAdd.grado.value), fecha_nacimiento: fAdd.nac.value || null, observaciones: `Agregado por la mesa en la Fecha ${fecha.numero}` }).select('id').single();
+      if (error) return falla(mensajeError(error));
+      compId = data.id;
+    }
+    if (!compId) return falla('Elige un competidor.');
+    const { error } = await sb.from('inscripciones').insert({ categoria_id: cat.id, competidor_id: compId, presente: true });
+    if (error) return falla(mensajeError(error));
+    ok.disabled = false; $('addModal').classList.remove('open');
+    await cargarNomina(); toast('Competidor agregado a la categoría');
+  });
+
+  pintarMarcador();
+  iniciar();
 })();
 </script>
 

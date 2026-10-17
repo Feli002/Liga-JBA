@@ -298,6 +298,67 @@
     transition:background .12s ease;
   }
   .site-banner .banner-back:hover{ background:rgba(24,29,27,0.8); }
+  /* ---------- NUEVO: conexión con la base ---------- */
+  [hidden]{ display:none !important; }
+  .fecha-pill{ display:inline-flex; align-items:center; gap:8px; font-size:12px; letter-spacing:0.08em; text-transform:uppercase; color:#2f6b45; background:#dcefe0; border-radius:999px; padding:6px 12px; margin:-8px 0 14px; }
+  .fecha-pill::before{ content:""; width:7px; height:7px; border-radius:50%; background:#3f8f5b; }
+  .gate{ text-align:center; padding:36px 22px; color:var(--muted); font-size:15px; line-height:1.5; }
+  .gate a{ color:var(--ink); }
+  .login-card{ max-width:420px; margin:0 auto; }
+  .field{ display:block; margin-bottom:14px; }
+  .field > span{ display:block; font-size:11px; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted); margin-bottom:6px; }
+  .field input, .field select, .cat-select{
+    width:100%; border:1px solid var(--line); border-radius:10px; padding:12px 14px; background:#fff;
+    font-family:'Oswald', sans-serif; font-size:16px; color:var(--ink);
+  }
+  .field input:focus, .field select:focus, .cat-select:focus{ outline:none; border-color:var(--gold); box-shadow:0 0 0 3px rgba(201,138,46,0.18); }
+  .modal-title{ font-family:'Bebas Neue', sans-serif; font-size:28px; letter-spacing:0.03em; line-height:1; margin:0 0 6px; }
+  .modal-text{ font-size:14px; color:var(--muted); margin:0 0 18px; line-height:1.45; }
+  .form-error{ font-size:14px; color:var(--red); background:var(--red-bg); border-radius:10px; padding:10px 12px; margin:0 0 14px; }
+  .actions{ display:flex; gap:10px; justify-content:flex-end; }
+  .btn{ font-family:'Oswald', sans-serif; font-size:15px; letter-spacing:0.04em; border-radius:12px; padding:12px 18px; cursor:pointer; border:1px solid transparent; }
+  .btn.primary{ background:var(--ink); color:#fff; }
+  .btn.ghost{ background:#fff; color:var(--ink); border-color:var(--line); }
+  .btn:disabled{ background:var(--muted); color:#fff; cursor:not-allowed; }
+
+  .list-head{ display:flex; justify-content:space-between; align-items:center; gap:10px; margin:18px 0 10px; }
+  .list-head .section-title{ margin:0; }
+  .add-btn{ background:none; border:1px dashed var(--muted); color:var(--ink); border-radius:10px; padding:8px 12px; font-family:'Oswald', sans-serif; font-size:13px; letter-spacing:0.04em; cursor:pointer; }
+  .add-btn:hover{ border-style:solid; }
+  ul.comp-list li{ cursor:default; }
+  ul.comp-list li .cname{ flex:1; min-width:0; font-size:15px; font-weight:500; }
+  ul.comp-list li .cname small{ display:block; font-size:12px; color:var(--muted); font-weight:400; }
+  ul.comp-list li.ausente{ background:transparent; border-style:dashed; }
+  ul.comp-list li.ausente .cname{ color:var(--muted); }
+  .done-tag{ font-size:11px; color:#2f6b45; background:#dcefe0; border-radius:999px; padding:2px 8px; flex:none; }
+  .order-btns button{ width:30px; height:22px; font-size:11px; }
+
+  .switch{ position:relative; display:inline-flex; align-items:center; gap:8px; flex:none; cursor:pointer; font-size:12px; color:var(--muted); user-select:none; }
+  .switch input{ position:absolute; opacity:0; width:1px; height:1px; }
+  .switch .track{ width:44px; height:26px; border-radius:999px; background:#d8d4c8; position:relative; transition:background .15s; }
+  .switch .track::after{ content:""; position:absolute; top:3px; left:3px; width:20px; height:20px; border-radius:50%; background:#fff; box-shadow:0 1px 3px rgba(0,0,0,0.25); transition:transform .15s; }
+  .switch input:checked + .track{ background:var(--green); }
+  .switch input:checked + .track::after{ transform:translateX(18px); }
+  .switch input:focus-visible + .track{ outline:3px solid var(--gold); outline-offset:2px; }
+  .switch .lbl{ width:56px; }
+
+  .seg{ display:inline-flex; border:1px solid var(--line); border-radius:10px; overflow:hidden; background:#fff; }
+  .seg button{ font-family:'Oswald', sans-serif; font-size:14px; border:none; background:none; padding:8px 14px; cursor:pointer; color:var(--ink); }
+  .seg button[aria-pressed="true"]{ background:var(--ink); color:#fff; }
+  .seg button:disabled{ cursor:not-allowed; opacity:0.6; }
+  .row-tools{ display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:16px; }
+  .row-tools .hint{ font-size:12px; color:var(--muted); }
+  .judges-grid.n3{ grid-template-columns:repeat(3, 1fr); }
+  .ronda-tag{ display:block; text-align:center; font-size:12px; letter-spacing:0.12em; text-transform:uppercase; color:var(--red); margin-top:-10px; margin-bottom:12px; }
+  .kata-field select{ width:100%; border:1px solid var(--line); border-radius:10px; padding:12px 14px; font-family:'Oswald', sans-serif; font-size:16px; color:var(--ink); background:#fff; }
+  .kata-field input{ margin-top:8px; }
+
+  .tie-group{ border:1px solid var(--line); border-radius:12px; padding:14px; margin-bottom:12px; background:#fbfaf6; }
+  .tie-group h3{ font-size:14px; font-weight:500; margin:0 0 10px; }
+  .tie-group li{ cursor:default; }
+  .saved-note{ text-align:center; font-size:12px; color:#2f6b45; margin:6px 0 0; min-height:16px; }
+  .toast{ position:fixed; left:50%; bottom:24px; transform:translateX(-50%); background:var(--ink); color:#fff; padding:12px 18px; border-radius:12px; font-size:14px; z-index:80; max-width:calc(100% - 32px); }
+  .modal{ background:#fff; border-radius:20px; padding:26px 22px 22px; width:min(440px,100%); max-height:calc(100vh - 40px); overflow:auto; }
 </style>
 </head>
 <body>
@@ -307,33 +368,37 @@
   <a class="banner-back" href="index.html">← Liga WUKF</a>
 </header>
 
-<!-- ================= SETUP ================= -->
-<div class="screen active" id="screenSetup">
+<!-- ================= ACCESO ================= -->
+<div class="screen active" id="screenGate">
   <div class="wrap">
     <div class="brand">Resultados Kata <span>· WUKF</span></div>
+    <div class="card" id="gateCard"><p class="gate">Cargando…</p></div>
+  </div>
+</div>
+
+<!-- ================= SETUP ================= -->
+<div class="screen" id="screenSetup">
+  <div class="wrap">
+    <div class="brand">Resultados Kata <span>· WUKF</span></div>
+    <div class="fecha-pill" id="fechaPill">—</div>
     <div class="card">
-      <div class="meta-fields">
-        <div class="meta-field">
-          <label>Fecha</label>
-          <input type="text" id="fechaInput" placeholder="Sábado 22 de agosto">
+      <label class="field"><span>Categoría</span>
+        <select class="cat-select" id="catSelect"><option value="">Elige una categoría…</option></select>
+      </label>
+
+      <div id="nominaBox" hidden>
+        <div class="list-head">
+          <p class="section-title" id="presTitle">Presentes · orden de presentación</p>
+          <button class="add-btn" id="addCompBtn" type="button">+ Agregar competidor</button>
         </div>
-        <div class="meta-field">
-          <label>Categoría</label>
-          <input type="text" id="categoriaInput" placeholder="Masculino 5 años">
-        </div>
+        <ul class="comp-list" id="presList"></ul>
+        <p class="empty-note" id="presEmpty">Marca como presentes a quienes van a competir.</p>
+
+        <p class="section-title" id="ausTitle">Ausentes</p>
+        <ul class="comp-list" id="ausList"></ul>
+
+        <button class="start-btn" id="startBtn" disabled>Iniciar competición</button>
       </div>
-
-      <p class="section-title">Agregar competidores (orden de presentación)</p>
-      <div class="add-row">
-        <input type="text" id="newCompInput" placeholder="Nombre del competidor" maxlength="60">
-        <button id="addCompBtn">Agregar</button>
-      </div>
-      <p class="count-note" id="countNote">0 / 10 competidores</p>
-
-      <ul class="comp-list" id="compList"></ul>
-      <p class="empty-note" id="emptyNote">Todavía no agregaste competidores.</p>
-
-      <button class="start-btn" id="startBtn" disabled>Iniciar competición</button>
     </div>
   </div>
 </div>
@@ -347,13 +412,21 @@
     </div>
     <div class="card">
       <div class="competitor-name" id="competeName">—</div>
+      <span class="ronda-tag" id="rondaTag" hidden>Kata de desempate</span>
 
       <div class="kata-field">
-        <label>Kata</label>
-        <input type="text" id="kataInput" placeholder="Nombre del kata">
+        <label for="kataSelect">Kata</label>
+        <select id="kataSelect"></select>
+        <input type="text" id="kataOtro" placeholder="Escribe el nombre del kata" maxlength="60" hidden>
       </div>
 
-      <p class="section-title">Puntuación de los jueces</p>
+      <div class="row-tools">
+        <p class="section-title" style="margin:0">Puntuación de los jueces</p>
+        <div class="seg" role="group" aria-label="Cantidad de jueces">
+          <button type="button" data-n="3" aria-pressed="false">3 jueces</button>
+          <button type="button" data-n="5" aria-pressed="true">5 jueces</button>
+        </div>
+      </div>
       <div class="judges-grid" id="judgesGrid"></div>
 
       <p class="validation-msg" id="validationMsg"></p>
@@ -370,6 +443,19 @@
     <div class="rm-score" id="rmScore">0,0</div>
     <div class="rm-chips" id="rmChips"></div>
     <button class="rm-cta" id="rmCta">Siguiente</button>
+    <p class="saved-note" id="rmSaved"></p>
+  </div>
+</div>
+
+<!-- ================= DESEMPATE MANUAL ================= -->
+<div class="screen" id="screenTie">
+  <div class="wrap">
+    <div class="brand">Desempate <span>· decisión de jueces</span></div>
+    <div class="card">
+      <p class="modal-text" id="tieText">Estos competidores siguen empatados. Ordénalos según la decisión del panel de jueces.</p>
+      <div id="tieGroups"></div>
+      <button class="start-btn" id="tieConfirm">Confirmar orden</button>
+    </div>
   </div>
 </div>
 
@@ -382,339 +468,446 @@
     </div>
     <div id="posRows"></div>
     <button class="reveal-btn" id="revealBtn">Revelar resultados</button>
+    <p class="saved-note" id="lugaresNote"></p>
   </div>
 </div>
 
+<!-- ================= AGREGAR COMPETIDOR ================= -->
+<div class="modal-backdrop" id="addModal" role="dialog" aria-modal="true">
+  <form class="modal" id="fAdd" novalidate>
+    <h2 class="modal-title">Agregar competidor</h2>
+    <p class="modal-text">Queda inscrito en esta categoría y marcado como presente.</p>
+    <div class="seg" role="group" aria-label="Tipo" style="margin-bottom:16px">
+      <button type="button" data-modo="existe" aria-pressed="true">Ya registrado</button>
+      <button type="button" data-modo="nuevo" aria-pressed="false">Nuevo</button>
+    </div>
+    <div id="modoExiste">
+      <label class="field"><span>Competidor</span><select name="existe"></select></label>
+    </div>
+    <div id="modoNuevo" hidden>
+      <label class="field"><span>Nombre</span><input name="nombre" maxlength="60"></label>
+      <label class="field"><span>Apellido</span><input name="apellido" maxlength="60"></label>
+      <label class="field"><span>Sexo</span><select name="sexo"><option>Femenino</option><option>Masculino</option></select></label>
+      <label class="field"><span>Grado</span><select name="grado"></select></label>
+      <label class="field"><span>Fecha de nacimiento (opcional)</span><input type="date" name="nac"></label>
+    </div>
+    <p class="form-error" role="alert" hidden></p>
+    <div class="actions">
+      <button type="button" class="btn ghost" id="addCancel">Cancelar</button>
+      <button type="submit" class="btn primary">Agregar</button>
+    </div>
+  </form>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.js"></script>
+<script src="liga.js"></script>
 <script>
 (function(){
-  const MAX_COMPETITORS = 10;
+  const $ = (id) => document.getElementById(id);
+  const fmt = (n) => Number(n).toFixed(1).replace('.', ',');
+  const showScreen = (id) => { document.querySelectorAll('.screen').forEach(s => s.classList.toggle('active', s.id === id)); window.scrollTo(0, 0); };
+  const toast = (t) => { const d = document.createElement('div'); d.className = 'toast'; d.textContent = t; document.body.appendChild(d); setTimeout(() => d.remove(), 3500); };
+  const guardarLocal = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} };
+  const leerLocal = (k) => { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } };
 
-  let state = {
-    competitors: [], // {id, name, kata, scores:[null,null,null,null,null], final:null, rank:null, classes:[]}
-    currentIndex: 0,
-    revealOrder: [],
-    revealStep: 0
-  };
-  let nextId = 1;
+  let fecha = null, categorias = [], katas = [], grados = [];
+  let cat = null;          // categoría elegida
+  let nomina = [];         // {insId, compId, nombre, presente, notas:{Principal, Extra}}
+  let orden = [];          // insIds de presentes en orden de presentación
+  let jueces = 5;
+  let cola = [], idx = 0;  // [{ins, ronda}]
+  let manual = {};         // desempates decididos por jueces
+  let resultados = [];
+  let reveal = { order: [], step: 0 };
 
-  function fmt(n){ return n.toFixed(1).replace('.', ','); }
-
-  function showScreen(id){
-    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
+  // ===================== ACCESO =====================
+  async function iniciar(){
+    const staff = await sesionStaff().catch(() => null);
+    if (!staff){
+      formLogin($('gateCard'), () => iniciar(), { texto: 'La mesa de Kata guarda los resultados en la base de la liga. Ingresa con la cuenta de mesa o administrador.' });
+      $('gateCard').classList.add('login-card');
+      return;
+    }
+    $('gateCard').classList.remove('login-card');
+    $('gateCard').innerHTML = '<p class="gate">Cargando…</p>';
+    const { data: f, error } = await sb.from('fechas').select('id, numero, dia')
+      .not('inicio', 'is', null).is('cierre', null).maybeSingle();
+    if (error){ $('gateCard').innerHTML = `<p class="gate">${esc(mensajeError(error))}</p>`; return; }
+    if (!f){
+      $('gateCard').innerHTML = '<p class="gate">No hay una fecha en curso.<br>Iníciala desde la <a href="index.html">pantalla de inicio</a> para registrar resultados.</p>';
+      return;
+    }
+    fecha = f;
+    const [c, k, g] = await Promise.all([
+      sb.from('categorias').select('id, nombre, codigo, n_jueces').eq('fecha_id', f.id).eq('modalidad', 'Kata').order('codigo'),
+      sb.from('katas').select('nombre, grupo').order('orden'),
+      sb.from('grados').select('orden, nombre').order('orden')
+    ]);
+    categorias = c.data || []; katas = k.data || []; grados = g.data || [];
+    $('fechaPill').textContent = `Fecha ${f.numero}` + (f.dia ? ` · ${diaLargo(f.dia)}` : '');
+    $('catSelect').innerHTML = '<option value="">Elige una categoría…</option>' +
+      categorias.map(x => `<option value="${x.id}">${esc(x.nombre)}</option>`).join('');
+    if (!categorias.length){
+      $('catSelect').innerHTML = '<option value="">Esta fecha no tiene categorías de Kata</option>';
+    }
+    showScreen('screenSetup');
   }
 
-  // ===================== SETUP =====================
-  const compList = document.getElementById('compList');
-  const emptyNote = document.getElementById('emptyNote');
-  const countNote = document.getElementById('countNote');
-  const newCompInput = document.getElementById('newCompInput');
-  const addCompBtn = document.getElementById('addCompBtn');
-  const startBtn = document.getElementById('startBtn');
+  // ===================== NÓMINA =====================
+  $('catSelect').addEventListener('change', () => {
+    cat = categorias.find(x => x.id === Number($('catSelect').value)) || null;
+    manual = {};
+    if (cat) cargarNomina(); else $('nominaBox').hidden = true;
+  });
 
-  function renderSetupList(){
-    compList.innerHTML = '';
-    emptyNote.style.display = state.competitors.length ? 'none' : 'block';
-    state.competitors.forEach((c, idx) => {
-      const li = document.createElement('li');
-      li.draggable = true;
-      li.dataset.id = c.id;
-      li.innerHTML = `
-        <span class="order-badge">${idx+1}</span>
-        <span class="drag-handle">⋮⋮</span>
-        <input type="text" value="${c.name}" data-id="${c.id}">
+  async function cargarNomina(){
+    $('nominaBox').hidden = false;
+    $('presList').innerHTML = '<li>Cargando…</li>'; $('ausList').innerHTML = '';
+    const { data, error } = await sb.from('inscripciones')
+      .select('id, presente, competidor_id, competidores(nombre, apellido), kata_presentaciones(ronda, kata, n1, n2, n3, n4, n5, puntaje, mayor_descartada, menor_descartada)')
+      .eq('categoria_id', cat.id);
+    if (error){ $('presList').innerHTML = `<li>${esc(mensajeError(error))}</li>`; return; }
+    nomina = data.map(i => ({
+      insId: i.id, compId: i.competidor_id, presente: i.presente,
+      nombre: `${i.competidores.nombre} ${i.competidores.apellido}`, apellido: i.competidores.apellido,
+      notas: Object.fromEntries((i.kata_presentaciones || []).map(p => [p.ronda, p]))
+    })).sort((a, b) => a.apellido.localeCompare(b.apellido, 'es'));
+
+    // Jueces: según lo ya registrado, o lo configurado para la categoría
+    const prin = nomina.map(n => n.notas.Principal).filter(Boolean);
+    jueces = prin.length ? (prin.some(p => p.n4 !== null) ? 5 : 3) : (cat.n_jueces || 5);
+
+    const guardado = leerLocal(`kata-orden-${cat.id}`) || [];
+    const pres = nomina.filter(n => n.presente).map(n => n.insId);
+    orden = guardado.filter(id => pres.includes(id)).concat(pres.filter(id => !guardado.includes(id)));
+    pintarNomina();
+  }
+
+  function pintarNomina(){
+    const pres = orden.map(id => nomina.find(n => n.insId === id)).filter(Boolean);
+    const aus = nomina.filter(n => !n.presente);
+    const sw = (n) => `<label class="switch"><input type="checkbox" data-ins="${n.insId}" ${n.presente ? 'checked' : ''} aria-label="Presente: ${esc(n.nombre)}"><span class="track"></span><span class="lbl">${n.presente ? 'Presente' : 'Ausente'}</span></label>`;
+
+    $('presList').innerHTML = pres.map((n, i) => `
+      <li>
+        <span class="order-badge">${i + 1}</span>
+        <span class="cname">${esc(n.nombre)}</span>
+        ${n.notas.Principal ? `<span class="done-tag">${fmt(n.notas.Principal.puntaje)}</span>` : ''}
         <div class="order-btns">
-          <button class="up-btn" ${idx===0?'disabled':''} title="Subir">▲</button>
-          <button class="down-btn" ${idx===state.competitors.length-1?'disabled':''} title="Bajar">▼</button>
+          <button type="button" data-up="${i}" ${i === 0 ? 'disabled' : ''} aria-label="Subir">▲</button>
+          <button type="button" data-down="${i}" ${i === pres.length - 1 ? 'disabled' : ''} aria-label="Bajar">▼</button>
         </div>
-        <button class="del-btn" title="Quitar">✕</button>
-      `;
+        ${sw(n)}
+      </li>`).join('');
+    $('ausList').innerHTML = aus.map(n => `<li class="ausente"><span class="cname">${esc(n.nombre)}</span>${sw(n)}</li>`).join('');
+    $('presEmpty').hidden = pres.length > 0;
+    $('ausTitle').hidden = aus.length === 0;
+    $('presTitle').textContent = `Presentes · orden de presentación (${pres.length})`;
 
-      li.querySelector('input').addEventListener('input', (e)=>{
-        c.name = e.target.value;
-      });
-      li.querySelector('.up-btn').addEventListener('click', ()=> moveCompetitor(idx, -1));
-      li.querySelector('.down-btn').addEventListener('click', ()=> moveCompetitor(idx, 1));
-      li.querySelector('.del-btn').addEventListener('click', ()=>{
-        state.competitors.splice(idx,1);
-        renderSetupList();
-      });
+    const hechos = pres.filter(n => n.notas.Principal).length;
+    $('startBtn').disabled = pres.length === 0;
+    $('startBtn').textContent = !hechos ? 'Iniciar competición' : (hechos === pres.length ? 'Ver resultados' : 'Continuar competición');
+  }
 
-      li.addEventListener('dragstart', ()=>{
-        li.classList.add('dragging');
-        li.dataset.dragIdx = idx;
-      });
-      li.addEventListener('dragend', ()=> li.classList.remove('dragging'));
-      li.addEventListener('dragover', (e)=> e.preventDefault());
-      li.addEventListener('drop', (e)=>{
-        e.preventDefault();
-        const dragging = compList.querySelector('.dragging');
-        if(!dragging || dragging === li) return;
-        const fromIdx = parseInt(dragging.dataset.dragIdx,10);
-        const toIdx = idx;
-        const [moved] = state.competitors.splice(fromIdx,1);
-        state.competitors.splice(toIdx,0,moved);
-        renderSetupList();
-      });
+  $('presList').addEventListener('click', (e) => {
+    const up = e.target.closest('[data-up]'), down = e.target.closest('[data-down]');
+    if (!up && !down) return;
+    const i = Number(up ? up.dataset.up : down.dataset.down), j = up ? i - 1 : i + 1;
+    [orden[i], orden[j]] = [orden[j], orden[i]];
+    guardarLocal(`kata-orden-${cat.id}`, orden);
+    pintarNomina();
+  });
 
-      compList.appendChild(li);
+  document.addEventListener('change', async (e) => {
+    const cb = e.target.closest('.switch input[data-ins]'); if (!cb) return;
+    const n = nomina.find(x => x.insId === Number(cb.dataset.ins)); if (!n) return;
+    const valor = cb.checked;
+    cb.disabled = true;
+    const { error } = await sb.from('inscripciones').update({ presente: valor }).eq('id', n.insId);
+    cb.disabled = false;
+    if (error){ cb.checked = !valor; toast(mensajeError(error)); return; }
+    n.presente = valor;
+    orden = valor ? orden.concat(n.insId) : orden.filter(id => id !== n.insId);
+    guardarLocal(`kata-orden-${cat.id}`, orden);
+    pintarNomina();
+  });
+
+  // ===================== AGREGAR COMPETIDOR =====================
+  const fAdd = $('fAdd');
+  let modo = 'existe';
+  fAdd.querySelectorAll('[data-modo]').forEach(b => b.addEventListener('click', () => {
+    modo = b.dataset.modo;
+    fAdd.querySelectorAll('[data-modo]').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+    $('modoExiste').hidden = modo !== 'existe'; $('modoNuevo').hidden = modo !== 'nuevo';
+  }));
+  $('addCompBtn').addEventListener('click', async () => {
+    const { data } = await sb.from('competidores').select('id, nombre, apellido').eq('activo', true).order('apellido');
+    const ya = new Set(nomina.map(n => n.compId));
+    const libres = (data || []).filter(c => !ya.has(c.id));
+    fAdd.existe.innerHTML = libres.length
+      ? libres.map(c => `<option value="${c.id}">${esc(c.apellido)}, ${esc(c.nombre)}</option>`).join('')
+      : '<option value="">No hay más competidores registrados</option>';
+    fAdd.grado.innerHTML = grados.map(g => `<option value="${g.orden}">${esc(g.nombre)}</option>`).join('');
+    fAdd.querySelector('.form-error').hidden = true;
+    fAdd.reset(); fAdd.querySelector('[data-modo="existe"]').click();
+    $('addModal').classList.add('open');
+  });
+  $('addCancel').addEventListener('click', () => $('addModal').classList.remove('open'));
+  fAdd.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const err = fAdd.querySelector('.form-error'), ok = fAdd.querySelector('[type=submit]');
+    const falla = (m) => { err.textContent = m; err.hidden = false; ok.disabled = false; };
+    ok.disabled = true; err.hidden = true;
+    let compId = Number(fAdd.existe.value);
+    if (modo === 'nuevo'){
+      const nombre = fAdd.nombre.value.trim(), apellido = fAdd.apellido.value.trim();
+      if (!nombre || !apellido) return falla('Nombre y apellido son obligatorios.');
+      const { data, error } = await sb.from('competidores').insert({
+        nombre, apellido, sexo: fAdd.sexo.value, grado_actual: Number(fAdd.grado.value),
+        fecha_nacimiento: fAdd.nac.value || null, observaciones: `Agregado por la mesa en la Fecha ${fecha.numero}`
+      }).select('id').single();
+      if (error) return falla(mensajeError(error));
+      compId = data.id;
+    }
+    if (!compId) return falla('Elige un competidor.');
+    const { data: ins, error } = await sb.from('inscripciones')
+      .insert({ categoria_id: cat.id, competidor_id: compId, presente: true }).select('id').single();
+    if (error) return falla(mensajeError(error));
+    orden = orden.concat(ins.id); guardarLocal(`kata-orden-${cat.id}`, orden);
+    ok.disabled = false;
+    $('addModal').classList.remove('open');
+    await cargarNomina();
+    toast('Competidor agregado a la categoría');
+  });
+
+  // ===================== COMPETENCIA =====================
+  $('startBtn').addEventListener('click', () => {
+    cola = orden.map(id => ({ ins: id, ronda: 'Principal' }));
+    idx = cola.findIndex(c => !nominaDe(c).notas.Principal);
+    if (idx === -1){ evaluar(); return; }
+    showScreen('screenCompete'); pintarCompetidor();
+  });
+  $('backToSetupBtn').addEventListener('click', () => { showScreen('screenSetup'); pintarNomina(); });
+
+  const nominaDe = (c) => nomina.find(n => n.insId === c.ins);
+  const judgesGrid = $('judgesGrid');
+
+  function bloqueoJueces(){
+    // No se puede cambiar la cantidad de jueces una vez que hay notas guardadas
+    return nomina.some(n => n.notas.Principal);
+  }
+  document.querySelectorAll('#screenCompete .seg button').forEach(b => b.addEventListener('click', () => {
+    if (bloqueoJueces()) return;
+    jueces = Number(b.dataset.n); pintarCompetidor();
+  }));
+
+  function pintarCompetidor(){
+    const c = cola[idx], n = nominaDe(c), previo = n.notas[c.ronda];
+    $('competeName').textContent = n.nombre;
+    $('rondaTag').hidden = c.ronda !== 'Extra';
+    $('progressPill').textContent = (c.ronda === 'Extra' ? 'Desempate ' : 'Competidor ') + (idx + 1) + ' de ' + cola.length;
+    $('validationMsg').textContent = '';
+
+    const bloqueado = bloqueoJueces();
+    document.querySelectorAll('#screenCompete .seg button').forEach(b => {
+      b.setAttribute('aria-pressed', String(Number(b.dataset.n) === jueces));
+      b.disabled = bloqueado && Number(b.dataset.n) !== jueces;
     });
 
-    countNote.textContent = state.competitors.length + ' / ' + MAX_COMPETITORS + ' competidores';
-    countNote.classList.toggle('full', state.competitors.length >= MAX_COMPETITORS);
-    const atMax = state.competitors.length >= MAX_COMPETITORS;
-    newCompInput.disabled = atMax;
-    addCompBtn.disabled = atMax;
-    startBtn.disabled = state.competitors.length === 0;
-  }
+    const sel = $('kataSelect'), otro = $('kataOtro');
+    sel.innerHTML = '<option value="">Elige el kata…</option>' +
+      katas.map(k => `<option>${esc(k.nombre)}</option>`).join('') + '<option value="__otro">Otro…</option>';
+    const kataPrevio = previo ? previo.kata : (c.ronda === 'Extra' ? '' : '');
+    if (kataPrevio && katas.some(k => k.nombre === kataPrevio)){ sel.value = kataPrevio; otro.hidden = true; }
+    else if (kataPrevio){ sel.value = '__otro'; otro.hidden = false; otro.value = kataPrevio; }
+    else { sel.value = ''; otro.hidden = true; otro.value = ''; }
 
-  function moveCompetitor(idx, delta){
-    const target = idx + delta;
-    if(target < 0 || target >= state.competitors.length) return;
-    const arr = state.competitors;
-    [arr[idx], arr[target]] = [arr[target], arr[idx]];
-    renderSetupList();
-  }
-
-  function addCompetitor(){
-    const name = newCompInput.value.trim();
-    if(!name || state.competitors.length >= MAX_COMPETITORS) return;
-    state.competitors.push({ id: nextId++, name, kata:'', scores:[null,null,null,null,null], final:null, rank:null, classes:[] });
-    newCompInput.value = '';
-    renderSetupList();
-    newCompInput.focus();
-  }
-
-  addCompBtn.addEventListener('click', addCompetitor);
-  newCompInput.addEventListener('keydown', (e)=>{ if(e.key === 'Enter') addCompetitor(); });
-
-  startBtn.addEventListener('click', ()=>{
-    if(state.competitors.length === 0) return;
-    state.currentIndex = 0;
-    showScreen('screenCompete');
-    renderCompete();
-  });
-
-  document.getElementById('backToSetupBtn').addEventListener('click', ()=>{
-    showScreen('screenSetup');
-    renderSetupList();
-  });
-
-  // ===================== COMPETE =====================
-  const competeName = document.getElementById('competeName');
-  const progressPill = document.getElementById('progressPill');
-  const kataInput = document.getElementById('kataInput');
-  const judgesGrid = document.getElementById('judgesGrid');
-  const validationMsg = document.getElementById('validationMsg');
-  const showResultBtn = document.getElementById('showResultBtn');
-
-  function computeHighlightClasses(nums){
-    // El más alto siempre va en verde, el más bajo siempre en rojo.
-    // Si el valor se repite (empate), todas esas celdas heredan el mismo color.
-    const classes = [null,null,null,null,null];
-    const maxValue = Math.max(...nums);
-    const minValue = Math.min(...nums);
-    nums.forEach((v,i)=>{ if(v === maxValue) classes[i] = 'is-max'; });
-    if(maxValue !== minValue){
-      nums.forEach((v,i)=>{ if(v === minValue) classes[i] = 'is-min'; });
-    }
-    return classes;
-  }
-
-  function renderCompete(){
-    const c = state.competitors[state.currentIndex];
-    competeName.textContent = c.name;
-    progressPill.textContent = 'Competidor ' + (state.currentIndex+1) + ' de ' + state.competitors.length;
-    kataInput.value = c.kata;
-    validationMsg.textContent = '';
-
+    judgesGrid.className = 'judges-grid' + (jueces === 3 ? ' n3' : '');
     judgesGrid.innerHTML = '';
-    for(let i=0;i<5;i++){
-      const cell = document.createElement('div');
-      cell.className = 'judge-cell';
-      cell.innerHTML = `<label>Juez ${i+1}</label><input type="number" step="0.1" min="0" max="10" data-j="${i}">`;
-      const inp = cell.querySelector('input');
-      inp.value = c.scores[i] === null ? '' : c.scores[i];
-      inp.addEventListener('input', ()=>{
-        const v = inp.value.trim();
-        c.scores[i] = v === '' ? null : parseFloat(v);
-        liveHighlight();
-      });
-      judgesGrid.appendChild(cell);
+    for (let i = 0; i < jueces; i++){
+      const v = previo ? previo['n' + (i + 1)] : null;
+      judgesGrid.insertAdjacentHTML('beforeend',
+        `<div class="judge-cell"><label for="j${i}">Juez ${i + 1}</label><input id="j${i}" type="number" inputmode="decimal" step="0.1" min="0" max="10" value="${v ?? ''}"></div>`);
     }
-    liveHighlight();
+    judgesGrid.querySelectorAll('input').forEach(inp => inp.addEventListener('input', resaltar));
+    resaltar();
   }
-
-  function liveHighlight(){
-    const c = state.competitors[state.currentIndex];
-    const inputs = Array.from(judgesGrid.querySelectorAll('input'));
-    inputs.forEach(i => i.classList.remove('is-max','is-min','is-tied'));
-    if(c.scores.every(v => v !== null && !isNaN(v))){
-      const classes = computeHighlightClasses(c.scores);
-      inputs.forEach((inp,i)=>{ if(classes[i]) inp.classList.add(classes[i]); });
-    }
-  }
-
-  kataInput.addEventListener('input', ()=>{
-    state.competitors[state.currentIndex].kata = kataInput.value;
+  $('kataSelect').addEventListener('change', () => {
+    $('kataOtro').hidden = $('kataSelect').value !== '__otro';
+    if (!$('kataOtro').hidden) $('kataOtro').focus();
   });
 
-  showResultBtn.addEventListener('click', ()=>{
-    const c = state.competitors[state.currentIndex];
-    const scoresOk = c.scores.every(v => v !== null && !isNaN(v));
-    if(!c.kata.trim() || !scoresOk){
-      validationMsg.textContent = 'Completá el nombre del kata y los 5 puntajes antes de continuar.';
-      const card = showResultBtn.closest('.card');
-      card.classList.remove('shake'); void card.offsetWidth; card.classList.add('shake');
+  const notas = () => Array.from(judgesGrid.querySelectorAll('input')).map(i => i.value.trim() === '' ? null : parseFloat(i.value.replace(',', '.')));
+  function resaltar(){
+    const ins = Array.from(judgesGrid.querySelectorAll('input')), v = notas();
+    ins.forEach(i => i.classList.remove('is-max', 'is-min'));
+    if (jueces !== 5 || v.some(x => x === null || isNaN(x))) return;
+    const max = Math.max(...v), min = Math.min(...v);
+    ins.forEach((i, k) => { if (v[k] === max) i.classList.add('is-max'); else if (v[k] === min) i.classList.add('is-min'); });
+  }
+
+  $('showResultBtn').addEventListener('click', async () => {
+    const c = cola[idx], n = nominaDe(c), v = notas();
+    const kata = $('kataSelect').value === '__otro' ? $('kataOtro').value.trim() : $('kataSelect').value;
+    const valido = v.every(x => x !== null && !isNaN(x) && x >= 0 && x <= 10);
+    if (!kata || !valido){
+      $('validationMsg').textContent = `Elige el kata y completa las ${jueces} notas (entre 0 y 10).`;
+      const card = $('showResultBtn').closest('.card'); card.classList.remove('shake'); void card.offsetWidth; card.classList.add('shake');
       return;
     }
-    const classes = computeHighlightClasses(c.scores);
-    const maxValue = Math.max(...c.scores);
-    const minValue = Math.min(...c.scores);
-    c.final = c.scores.reduce((a,b)=>a+b,0) - maxValue - minValue;
-    c.classes = classes;
-    openResultModal(c);
+    $('showResultBtn').disabled = true; $('showResultBtn').textContent = 'Guardando…';
+    if ($('kataSelect').value === '__otro' && !katas.some(k => k.nombre === kata)){
+      const r = await sb.from('katas').insert({ nombre: kata, grupo: 'Otro', orden: 99 });
+      if (!r.error) katas.push({ nombre: kata, grupo: 'Otro' });
+    }
+    const fila = { inscripcion_id: n.insId, ronda: c.ronda, kata,
+      n1: v[0], n2: v[1], n3: v[2], n4: jueces === 5 ? v[3] : null, n5: jueces === 5 ? v[4] : null };
+    const { data, error } = await sb.from('kata_presentaciones').upsert(fila, { onConflict: 'inscripcion_id,ronda' })
+      .select('ronda, kata, n1, n2, n3, n4, n5, puntaje, mayor_descartada, menor_descartada').single();
+    $('showResultBtn').disabled = false; $('showResultBtn').textContent = 'Mostrar resultado';
+    if (error){ $('validationMsg').textContent = mensajeError(error); return; }
+    n.notas[c.ronda] = data;
+    abrirResultado(n, data);
   });
 
-  // ===================== RESULT MODAL =====================
-  const resultModal = document.getElementById('resultModal');
-  const rmName = document.getElementById('rmName');
-  const rmKata = document.getElementById('rmKata');
-  const rmScore = document.getElementById('rmScore');
-  const rmChips = document.getElementById('rmChips');
-  const rmCta = document.getElementById('rmCta');
-
-  function openResultModal(c){
-    rmName.textContent = c.name;
-    rmKata.textContent = c.kata;
-    rmScore.textContent = fmt(c.final);
-    rmChips.innerHTML = '';
-    c.scores.forEach((v,i)=>{
-      const chip = document.createElement('div');
-      chip.className = 'rm-chip' + (c.classes[i] ? ' '+c.classes[i] : '');
-      chip.textContent = fmt(v);
-      rmChips.appendChild(chip);
-    });
-
-    const isLast = state.currentIndex === state.competitors.length - 1;
-    if(isLast){
-      rmCta.textContent = 'Mostrar tabla de posiciones';
-      rmCta.classList.add('final');
-    } else {
-      rmCta.textContent = 'Llamar a: ' + state.competitors[state.currentIndex+1].name + ' →';
-      rmCta.classList.remove('final');
-    }
-    resultModal.classList.add('open');
+  // ===================== MODAL RESULTADO =====================
+  function abrirResultado(n, p){
+    $('rmName').textContent = n.nombre;
+    $('rmKata').textContent = p.kata + (p.ronda === 'Extra' ? ' · desempate' : '');
+    $('rmScore').textContent = fmt(p.puntaje);
+    const v = [p.n1, p.n2, p.n3, p.n4, p.n5].filter(x => x !== null).map(Number);
+    let maxDone = false, minDone = false;
+    $('rmChips').innerHTML = v.map(x => {
+      let cl = '';
+      if (v.length === 5 && x === Number(p.mayor_descartada) && !maxDone){ cl = ' is-max'; maxDone = true; }
+      else if (v.length === 5 && x === Number(p.menor_descartada) && !minDone){ cl = ' is-min'; minDone = true; }
+      return `<div class="rm-chip${cl}">${fmt(x)}</div>`;
+    }).join('');
+    $('rmSaved').textContent = 'Guardado en la base ✓';
+    const sig = cola.slice(idx + 1).find(c => !nominaDe(c).notas[c.ronda]);
+    $('rmCta').classList.toggle('final', !sig);
+    $('rmCta').textContent = sig ? `Llamar a: ${nominaDe(sig).nombre} →` : 'Calcular posiciones';
+    $('resultModal').classList.add('open');
   }
-
-  rmCta.addEventListener('click', ()=>{
-    resultModal.classList.remove('open');
-    const isLast = state.currentIndex === state.competitors.length - 1;
-    if(isLast){
-      startResultsScreen();
-    } else {
-      state.currentIndex++;
-      renderCompete();
-    }
+  $('rmCta').addEventListener('click', () => {
+    $('resultModal').classList.remove('open');
+    const sig = cola.findIndex((c, i) => i > idx && !nominaDe(c).notas[c.ronda]);
+    if (sig !== -1){ idx = sig; pintarCompetidor(); return; }
+    evaluar();
   });
 
-  // ===================== RESULTS SCREEN =====================
-  const posRows = document.getElementById('posRows');
-  const revealBtn = document.getElementById('revealBtn');
-  const resultsCat = document.getElementById('resultsCat');
-  const resultsFecha = document.getElementById('resultsFecha');
+  // ===================== POSICIONES Y DESEMPATES =====================
+  function clasificar(){
+    const lista = orden.map(id => nomina.find(n => n.insId === id)).filter(n => n && n.notas.Principal);
+    const clave = (n) => { const p = n.notas.Principal; return jueces === 5 ? [+p.puntaje, +p.mayor_descartada, +p.menor_descartada] : [+p.puntaje]; };
+    const cmp = (a, b) => { for (let i = 0; i < a.length; i++){ if (a[i] !== b[i]) return b[i] - a[i]; } return 0; };
+    lista.sort((a, b) => cmp(clave(a), clave(b)));
+    const grupos = [];
+    lista.forEach(n => { const g = grupos.at(-1); if (g && cmp(clave(g[0]), clave(n)) === 0) g.push(n); else grupos.push([n]); });
 
-  function computeRanking(){
-    const sorted = state.competitors.slice().sort((a,b)=> b.final - a.final);
-    sorted.forEach((c) => {
-      const higherCount = sorted.filter(o => o.final > c.final).length;
-      c.rank = higherCount + 1;
-    });
-    return sorted;
+    let pos = 1; const final = [], extra = [], pendientes = [];
+    for (const g of grupos){
+      if (g.length === 1 || pos > 3){ g.forEach(n => final.push({ n, rank: pos })); pos += g.length; continue; }
+      let sub = [g];
+      if (jueces === 3){
+        const faltan = g.filter(n => !n.notas.Extra);
+        if (faltan.length){ extra.push(...faltan); pos += g.length; continue; }
+        const ke = (n) => +n.notas.Extra.puntaje;
+        const s = g.slice().sort((a, b) => ke(b) - ke(a)); sub = [];
+        s.forEach(n => { const x = sub.at(-1); if (x && ke(x[0]) === ke(n)) x.push(n); else sub.push([n]); });
+      }
+      for (const sg of sub){
+        if (sg.length === 1){ final.push({ n: sg[0], rank: pos, desempate: true }); pos++; continue; }
+        const key = sg.map(n => n.insId).sort((a, b) => a - b).join('-');
+        if (manual[key]){ manual[key].forEach(id => { final.push({ n: sg.find(x => x.insId === id), rank: pos, decision: true }); pos++; }); }
+        else { pendientes.push({ key, grupo: sg, desde: pos }); pos += sg.length; }
+      }
+    }
+    return { final, extra, pendientes };
   }
 
-  function ordinalWord(rank){
-    if(rank===1) return '1er';
-    if(rank===2) return '2do';
-    if(rank===3) return '3er';
-    return rank + 'to';
+  function evaluar(){
+    const r = clasificar();
+    if (r.extra.length){
+      toast(`Empate: ${r.extra.map(n => n.nombre).join(' y ')} presentan un kata de desempate`);
+      cola = r.extra.map(n => ({ ins: n.insId, ronda: 'Extra' })); idx = 0;
+      showScreen('screenCompete'); pintarCompetidor(); return;
+    }
+    if (r.pendientes.length){ pintarDesempate(r.pendientes); return; }
+    mostrarResultados(r.final);
   }
 
-  function startResultsScreen(){
-    resultsCat.textContent = document.getElementById('categoriaInput').value || 'Categoría';
-    resultsFecha.textContent = document.getElementById('fechaInput').value || '';
+  let pendientesActuales = [];
+  function pintarDesempate(p){
+    pendientesActuales = p.map(x => ({ key: x.key, desde: x.desde, ids: x.grupo.map(n => n.insId) }));
+    const pintar = () => {
+      $('tieGroups').innerHTML = pendientesActuales.map((g, gi) => `
+        <div class="tie-group"><h3>Empate por el ${g.desde}º lugar</h3><ul class="comp-list">
+        ${g.ids.map((id, i) => { const n = nomina.find(x => x.insId === id); return `
+          <li><span class="order-badge">${g.desde + i}</span><span class="cname">${esc(n.nombre)}<small>${fmt(n.notas.Principal.puntaje)}${n.notas.Extra ? ' · desempate ' + fmt(n.notas.Extra.puntaje) : ''}</small></span>
+          <div class="order-btns"><button type="button" data-g="${gi}" data-i="${i}" data-d="-1" ${i === 0 ? 'disabled' : ''} aria-label="Subir">▲</button>
+          <button type="button" data-g="${gi}" data-i="${i}" data-d="1" ${i === g.ids.length - 1 ? 'disabled' : ''} aria-label="Bajar">▼</button></div></li>`; }).join('')}
+        </ul></div>`).join('');
+    };
+    $('tieGroups').onclick = (e) => {
+      const b = e.target.closest('[data-g]'); if (!b) return;
+      const g = pendientesActuales[+b.dataset.g], i = +b.dataset.i, j = i + +b.dataset.d;
+      [g.ids[i], g.ids[j]] = [g.ids[j], g.ids[i]]; pintar();
+    };
+    pintar(); showScreen('screenTie');
+  }
+  $('tieConfirm').addEventListener('click', () => {
+    pendientesActuales.forEach(g => { manual[g.key] = g.ids.slice(); });
+    evaluar();
+  });
 
-    const sorted = computeRanking();
-    const podiumRanks = Array.from(new Set(sorted.filter(c=>c.rank<=3).map(c=>c.rank))).sort((a,b)=>a-b);
-    state.revealOrder = ['nonpodium', ...podiumRanks.slice().sort((a,b)=>b-a)];
-    state.revealStep = 0;
-    state.sortedResults = sorted;
-
-    renderResultsList();
-    updateRevealButton();
+  // ===================== RESULTADOS =====================
+  async function mostrarResultados(final){
+    resultados = final;
+    $('resultsCat').textContent = cat.nombre;
+    $('resultsFecha').textContent = `Fecha ${fecha.numero}` + (fecha.dia ? ` · ${diaLargo(fecha.dia)}` : '');
+    const podio = [...new Set(final.filter(r => r.rank <= 3).map(r => r.rank))].sort((a, b) => b - a);
+    reveal = { order: (final.some(r => r.rank > 3) ? ['resto'] : []).concat(podio), step: 0 };
+    pintarResultados([]); botonRevelar();
     showScreen('screenResults');
+
+    // Guardar lugares 1-3 en la base (el resto queda vacío)
+    $('lugaresNote').textContent = 'Guardando posiciones…';
+    const lugar = new Map(final.map(r => [r.n.insId, r.rank <= 3 ? r.rank : null]));
+    const res = await Promise.all(nomina.map(n => sb.from('inscripciones').update({ lugar: n.presente ? (lugar.get(n.insId) ?? null) : null }).eq('id', n.insId)));
+    const fallo = res.find(r => r.error);
+    $('lugaresNote').textContent = fallo ? 'No se pudieron guardar las posiciones: ' + mensajeError(fallo.error) : 'Posiciones guardadas en la tabla general ✓';
   }
 
-  function isRevealed(c){
-    if(c.rank > 3){
-      return state.revealStep >= 1;
+  const revelado = (r) => r.rank > 3 ? reveal.order[0] === 'resto' && reveal.step >= 1 : reveal.order.indexOf(r.rank) !== -1 && reveal.step > reveal.order.indexOf(r.rank);
+  function pintarResultados(recien){
+    $('posRows').innerHTML = resultados.map(r => {
+      const v = revelado(r), p = r.n.notas.Principal;
+      const det = p.kata + (r.n.notas.Extra ? ` · desempate ${fmt(r.n.notas.Extra.puntaje)}` : '') + (r.decision ? ' · decisión de jueces' : '');
+      return `<div class="pos-row${v ? ' rank-' + r.rank : ' hidden-row'}${recien.includes(r.rank) ? ' just-revealed' : ''}">
+        <div class="rank-badge">${v ? r.rank : '?'}</div>
+        <div class="pos-info"><div class="pos-name">${esc(r.n.nombre)}</div><div class="pos-kata">${esc(det)}</div></div>
+        <div class="pos-score">${v ? fmt(p.puntaje) : ''}</div></div>`;
+    }).join('');
+  }
+  const ordinal = (r) => ({ 1: '1er', 2: '2do', 3: '3er' })[r] || r + 'º';
+  function botonRevelar(){
+    const b = $('revealBtn');
+    if (reveal.step >= reveal.order.length){ b.textContent = 'Próxima categoría'; b.classList.add('final-btn'); return; }
+    b.classList.remove('final-btn');
+    const s = reveal.order[reveal.step];
+    b.textContent = s === 'resto' ? 'Revelar resultados' : `Revelar ${ordinal(s)} lugar`;
+  }
+  $('revealBtn').addEventListener('click', () => {
+    if (reveal.step >= reveal.order.length){
+      cat = null; $('catSelect').value = ''; $('nominaBox').hidden = true; showScreen('screenSetup'); return;
     }
-    const stepIdx = state.revealOrder.indexOf(c.rank);
-    return stepIdx !== -1 && state.revealStep > stepIdx;
-  }
-
-  function renderResultsList(justRevealedRanks){
-    justRevealedRanks = justRevealedRanks || [];
-    posRows.innerHTML = '';
-    state.sortedResults.forEach(c => {
-      const revealed = isRevealed(c);
-      const row = document.createElement('div');
-      row.className = 'pos-row' + (revealed ? ' rank-'+c.rank : ' hidden-row') + (justRevealedRanks.includes(c.rank) ? ' just-revealed' : '');
-      row.innerHTML = `
-        <div class="rank-badge">${revealed ? c.rank : '?'}</div>
-        <div class="pos-info">
-          <div class="pos-name">${c.name}</div>
-          <div class="pos-kata">${c.kata}</div>
-        </div>
-        <div class="pos-score">${revealed ? fmt(c.final) : ''}</div>
-      `;
-      posRows.appendChild(row);
-    });
-  }
-
-  function updateRevealButton(){
-    if(state.revealStep >= state.revealOrder.length){
-      revealBtn.textContent = 'Próxima categoría';
-      revealBtn.classList.add('final-btn');
-      return;
-    }
-    revealBtn.classList.remove('final-btn');
-    const next = state.revealOrder[state.revealStep];
-    revealBtn.textContent = next === 'nonpodium' ? 'Revelar resultados' : ('Revelar ' + ordinalWord(next) + ' lugar');
-  }
-
-  revealBtn.addEventListener('click', ()=>{
-    if(state.revealStep >= state.revealOrder.length){
-      resetAll();
-      return;
-    }
-    const revealing = state.revealOrder[state.revealStep];
-    state.revealStep++;
-    const justRanks = revealing === 'nonpodium'
-      ? state.sortedResults.filter(c=>c.rank>3).map(c=>c.rank)
-      : [revealing];
-    renderResultsList(justRanks);
-    updateRevealButton();
+    const s = reveal.order[reveal.step++];
+    pintarResultados(s === 'resto' ? resultados.filter(r => r.rank > 3).map(r => r.rank) : [s]);
+    botonRevelar();
   });
 
-  function resetAll(){
-    state = { competitors: [], currentIndex:0, revealOrder:[], revealStep:0 };
-    document.getElementById('categoriaInput').value = '';
-    showScreen('screenSetup');
-    renderSetupList();
-  }
-
-  renderSetupList();
+  iniciar();
 })();
 </script>
 
