@@ -23,7 +23,7 @@
   }
   *{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
   html,body{ height:100%; }
-  body{
+  body{ font-size:1.125rem; /* base 18px (Design System) */
     margin:0; background:var(--paper); color:var(--ink);
     font-family:'Oswald', sans-serif; min-height:100vh;
     display:flex; flex-direction:column;
@@ -35,10 +35,10 @@
   .hero-banner::after{ content:""; position:absolute; inset:0; background:linear-gradient(180deg, rgba(0,0,0,0) 55%, rgba(12,15,13,0.35) 100%); }
 
   main{ flex:1; display:flex; flex-direction:column; align-items:center; padding:clamp(24px,5vw,48px) 20px 40px; }
-  .title{ font-family:'Bebas Neue', sans-serif; font-size:clamp(36px, 7vw, 56px); letter-spacing:0.02em; text-align:center; margin:8px 0 4px; }
+  .title{ font-family:'Bebas Neue', sans-serif; font-size:clamp(40px, 7vw, 63px); letter-spacing:0.02em; text-align:center; margin:8px 0 4px; }
   .title span{ color:var(--gold); }
   .date-pill{
-    font-size:13px; letter-spacing:0.08em; color:var(--muted); background:#fff;
+    font-size:0.875rem; letter-spacing:0.08em; color:var(--muted); background:#fff;
     border:1px solid var(--line); padding:8px 18px; border-radius:999px; margin-bottom:clamp(28px,5vw,44px);
   }
 
@@ -52,17 +52,17 @@
     box-shadow:0 6px 24px rgba(20,20,10,0.06);
   }
   .live-tag{
-    display:inline-flex; align-items:center; gap:8px; font-size:11px; font-weight:600; letter-spacing:0.12em;
+    display:inline-flex; align-items:center; gap:8px; font-size:0.875rem; font-weight:600; letter-spacing:0.12em;
     text-transform:uppercase; color:var(--green);
   }
   .live-tag::before{ content:""; width:8px; height:8px; border-radius:50%; background:var(--green); box-shadow:0 0 0 4px rgba(63,143,91,0.18); animation:pulse 1.8s infinite; }
   @keyframes pulse{ 50%{ box-shadow:0 0 0 7px rgba(63,143,91,0.05); } }
-  .live-name{ font-family:'Bebas Neue', sans-serif; font-size:30px; letter-spacing:0.03em; line-height:1; margin:6px 0 4px; }
-  .live-meta{ font-size:14px; color:var(--muted); line-height:1.5; }
+  .live-name{ font-family:'Bebas Neue', sans-serif; font-size:2rem; letter-spacing:0.03em; line-height:1; margin:6px 0 4px; }
+  .live-meta{ font-size:1rem; color:var(--muted); line-height:1.5; }
   .live-meta b{ color:var(--ink); font-weight:500; }
   .live-time{ text-align:right; }
-  .live-time .big{ font-family:'Bebas Neue', sans-serif; font-size:30px; line-height:1; }
-  .live-time .small{ font-size:12px; color:var(--muted); letter-spacing:0.06em; text-transform:uppercase; }
+  .live-time .big{ font-family:'Bebas Neue', sans-serif; font-size:2rem; line-height:1; }
+  .live-time .small{ font-size:0.875rem; color:var(--muted); letter-spacing:0.06em; text-transform:uppercase; }
   @media (max-width:560px){ .live-time{ text-align:left; } }
 
   /* ---------- TARJETAS ---------- */
@@ -87,13 +87,13 @@
   .disc-card .accent{ color:var(--gold-bright); }
 
   .disc-icon{ position:absolute; top:20px; right:20px; width:44px; height:44px; opacity:0.35; }
-  .disc-name{ font-family:'Bebas Neue', sans-serif; font-size:40px; letter-spacing:0.03em; line-height:1; margin-bottom:6px; }
-  .disc-desc{ font-size:13px; letter-spacing:0.02em; opacity:0.9; max-width:30ch; }
-  .disc-cta{ margin-top:16px; display:inline-flex; align-items:center; gap:6px; font-size:12px; letter-spacing:0.1em; text-transform:uppercase; font-weight:600; opacity:0.95; }
+  .disc-name{ font-family:'Bebas Neue', sans-serif; font-size:2.75rem; letter-spacing:0.03em; line-height:1; margin-bottom:6px; }
+  .disc-desc{ font-size:0.875rem; letter-spacing:0.02em; opacity:0.9; max-width:30ch; }
+  .disc-cta{ margin-top:16px; display:inline-flex; align-items:center; gap:6px; font-size:0.875rem; letter-spacing:0.1em; text-transform:uppercase; font-weight:600; opacity:0.95; }
 
   .links{ display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; margin-top:20px; }
   .link-btn{
-    background:none; border:none; padding:8px 0; font-family:'Oswald', sans-serif; font-size:14px;
+    background:none; border:none; padding:8px 0; font-family:'Oswald', sans-serif; font-size:1rem;
     letter-spacing:0.06em; cursor:pointer; text-decoration:underline; text-underline-offset:4px;
   }
   .link-btn.danger{ color:var(--aka); }
@@ -102,7 +102,7 @@
   a.link-btn{ color:var(--muted); text-decoration:none; }
   a.link-btn:hover{ color:var(--ink); }
 
-  .notice{ font-size:13px; color:#6d4a14; background:#f8ecd6; border:1px solid #ecd3a6; border-radius:12px; padding:10px 14px; margin-bottom:18px; }
+  .notice{ font-size:0.875rem; color:#6d4a14; background:#f8ecd6; border:1px solid #ecd3a6; border-radius:12px; padding:10px 14px; margin-bottom:18px; }
   .skeleton{ height:220px; border-radius:20px; background:linear-gradient(90deg,var(--soft),#faf8f2,var(--soft)); background-size:200% 100%; animation:sh 1.2s infinite; }
   @keyframes sh{ to{ background-position:-200% 0; } }
 
@@ -110,22 +110,22 @@
   .modal-backdrop{ position:fixed; inset:0; background:rgba(10,10,8,0.6); display:none; align-items:center; justify-content:center; padding:16px; z-index:10; }
   .modal-backdrop.open{ display:flex; }
   .modal{ background:#fff; border-radius:20px; padding:28px 24px 24px; width:min(440px,100%); max-height:calc(100vh - 32px); overflow:auto; box-shadow:0 30px 80px rgba(0,0,0,0.35); }
-  .modal-title{ font-family:'Bebas Neue', sans-serif; font-size:30px; letter-spacing:0.03em; line-height:1; margin:0 0 6px; }
-  .modal-text{ font-size:14px; color:var(--muted); margin:0 0 18px; line-height:1.45; }
+  .modal-title{ font-family:'Bebas Neue', sans-serif; font-size:2rem; letter-spacing:0.03em; line-height:1; margin:0 0 6px; }
+  .modal-text{ font-size:1rem; color:var(--muted); margin:0 0 18px; line-height:1.45; }
   .field{ display:block; margin-bottom:14px; }
-  .field > span{ display:block; font-size:12px; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted); margin-bottom:6px; }
+  .field > span{ display:block; font-size:0.875rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted); margin-bottom:6px; }
   .field > span em{ font-style:normal; text-transform:none; letter-spacing:0; }
   .field input, .field select{
-    width:100%; font-family:'Oswald', sans-serif; font-size:16px; color:var(--ink);
+    width:100%; font-family:'Oswald', sans-serif; font-size:1.125rem; color:var(--ink);
     border:1px solid var(--line); border-radius:10px; padding:11px 12px; background:#fff;
   }
   .field input:focus, .field select:focus{ outline:none; border-color:var(--gold); box-shadow:0 0 0 3px rgba(201,138,46,0.18); }
   .row2{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
   @media (max-width:420px){ .row2{ grid-template-columns:1fr; } }
-  .hint{ font-size:13px; color:var(--muted); margin:-4px 0 14px; }
-  .form-error{ font-size:14px; color:var(--aka); background:#f6dcdc; border-radius:10px; padding:10px 12px; margin:0 0 14px; }
+  .hint{ font-size:0.875rem; color:var(--muted); margin:-4px 0 14px; }
+  .form-error{ font-size:1rem; color:var(--aka); background:#f6dcdc; border-radius:10px; padding:10px 12px; margin:0 0 14px; }
   .actions{ display:flex; gap:10px; justify-content:flex-end; margin-top:6px; }
-  .btn{ font-family:'Oswald', sans-serif; font-size:15px; letter-spacing:0.04em; border-radius:12px; padding:12px 18px; cursor:pointer; border:1px solid transparent; }
+  .btn{ font-family:'Oswald', sans-serif; font-size:1.125rem; letter-spacing:0.04em; border-radius:12px; padding:12px 18px; cursor:pointer; border:1px solid transparent; }
   .btn.primary{ background:var(--ink); color:#fff; }
   .btn.primary:hover{ background:#000; }
   .btn.danger{ background:var(--aka); color:#fff; }
@@ -135,17 +135,17 @@
     display:flex; align-items:center; justify-content:space-between; gap:12px;
     background:var(--soft); border-radius:12px; padding:12px 14px; margin-bottom:16px;
   }
-  .next-date span{ font-size:12px; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted); }
-  .next-date b{ font-family:'Bebas Neue', sans-serif; font-size:26px; font-weight:400; letter-spacing:0.03em; line-height:1; }
-  .summary{ background:var(--soft); border-radius:12px; padding:12px 14px; font-size:14px; line-height:1.6; margin-bottom:16px; }
+  .next-date span{ font-size:0.875rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted); }
+  .next-date b{ font-family:'Bebas Neue', sans-serif; font-size:1.625rem; font-weight:400; letter-spacing:0.03em; line-height:1; }
+  .summary{ background:var(--soft); border-radius:12px; padding:12px 14px; font-size:1rem; line-height:1.6; margin-bottom:16px; }
 
   .toast{
     position:fixed; left:50%; bottom:24px; transform:translateX(-50%); background:var(--ink); color:#fff;
-    padding:12px 18px; border-radius:12px; font-size:14px; box-shadow:0 10px 30px rgba(0,0,0,0.25); z-index:20;
+    padding:12px 18px; border-radius:12px; font-size:1rem; box-shadow:0 10px 30px rgba(0,0,0,0.25); z-index:20;
     max-width:calc(100% - 32px);
   }
 
-  footer{ text-align:center; padding:18px; font-size:11px; letter-spacing:0.08em; color:var(--muted); text-transform:uppercase; }
+  footer{ text-align:center; padding:18px; font-size:0.875rem; letter-spacing:0.08em; color:var(--muted); text-transform:uppercase; }
   footer button{ background:none; border:none; color:var(--muted); font:inherit; letter-spacing:inherit; text-transform:inherit; text-decoration:underline; cursor:pointer; padding:0; }
 </style>
 </head>
@@ -180,6 +180,9 @@
           <div class="disc-desc">Posiciones de la temporada y podios de cada fecha.</div>
           <div class="disc-cta">Ver tabla →</div>
         </a>
+      </div>
+      <div class="links" style="justify-content:flex-end">
+        <a class="link-btn" href="dashboard.html">Dashboard de resultados →</a>
       </div>
     </div>
 
@@ -220,7 +223,10 @@
 
       <div class="links">
         <button class="link-btn danger" id="btnFinalizar" type="button">Finalizar fecha</button>
-        <a class="link-btn" href="tabla-general.html">Ver tabla general →</a>
+        <span style="display:flex;gap:20px;flex-wrap:wrap">
+          <a class="link-btn" href="dashboard.html">Dashboard</a>
+          <a class="link-btn" href="tabla-general.html">Ver tabla general →</a>
+        </span>
       </div>
     </div>
   </main>
