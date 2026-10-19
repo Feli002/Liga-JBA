@@ -190,7 +190,7 @@
     const nCat = new Set(d.podios.map(p => p.categoria)).size;
     const dia = diaLargo(d.dia);
     const paginas = [
-      ...paginasModalidad(d, cont, 'Kata', '#c98a2e', [dia, `${d.competidores} competidores`, `${nCat} categorías`].filter(Boolean).join(' · ')),
+      ...paginasModalidad(d, cont, 'Kata', '#c98a2e', [dia, d.competidores ? `${d.competidores} competidores` : null, `${new Set(d.podios.filter(p => p.modalidad === 'Kata').map(p => p.categoria)).size} categorías`].filter(Boolean).join(' · ')),
       ...paginasModalidad(d, cont, 'Kumite', '#c8262c', [dia, `${new Set(d.podios.filter(p => p.modalidad === 'Kumite').map(p => p.categoria)).size} categorías`].filter(Boolean).join(' · ')),
       ...paginaTabla(d, cont)
     ];
