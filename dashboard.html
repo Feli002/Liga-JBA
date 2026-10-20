@@ -127,6 +127,14 @@
 
   .respaldo{ display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap:20px; }
   .respaldo .btn{ width:100%; }
+  .fb-resp{ border-top:1px solid var(--sunk); padding:16px 0; }
+  .fb-resp:first-child{ border-top:none; padding-top:4px; }
+  .fb-cab{ display:flex; flex-wrap:wrap; gap:6px 12px; align-items:baseline; margin-bottom:8px; }
+  .fb-cab b{ font-weight:600; font-size:1.125rem; }
+  .fb-cab span{ color:var(--muted); font-size:0.875rem; }
+  .fb-cita{ margin:6px 0 0; font-size:1rem; line-height:1.45; }
+  .fb-cita em{ font-style:normal; display:block; font-size:0.875rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted); margin-bottom:2px; }
+  .fb-pal{ display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; }
   .skeleton{ height:14px; border-radius:7px; background:linear-gradient(90deg,var(--sunk),#f7f5ef,var(--sunk)); background-size:200% 100%; animation:sh 1.2s infinite; margin:14px 0; }
   @keyframes sh{ to{ background-position:-200% 0; } }
   .refreshing{ opacity:0.55; transition:opacity .2s; }
@@ -158,7 +166,7 @@
       <span class="lbl">Fecha</span>
       <div class="seg" id="fFecha"></div>
       <nav class="nav" aria-label="Secciones">
-        <a href="#s-alumnos">Alumnos</a><a href="#s-categorias">Categorías</a><a href="#s-katas">Katas</a><a href="#s-rendimiento">Rendimiento</a><a href="#s-combates">Combates</a><a href="#s-respaldo" class="solo-admin" hidden>Respaldo</a>
+        <a href="#s-alumnos">Alumnos</a><a href="#s-categorias">Categorías</a><a href="#s-katas">Katas</a><a href="#s-rendimiento">Rendimiento</a><a href="#s-combates">Combates</a><a href="#s-feedback" class="solo-admin" hidden>Feedback</a><a href="#s-respaldo" class="solo-admin" hidden>Respaldo</a>
       </nav>
     </div>
 
@@ -224,6 +232,23 @@
           <div class="card"><h3>Duración media por categoría</h3><p class="hint">Minutos:segundos.</p><div class="chart" id="chDurCat"></div></div>
         </div>
         <div class="card" style="margin-top:16px"><h3>Combates más largos</h3><div class="tbl-wrap"><table id="tDur"></table></div></div>
+      </section>
+
+      <section id="s-feedback" class="solo-admin" hidden>
+        <h2 class="section-title">Feedback de la prueba</h2>
+        <p class="section-sub">Encuesta de quienes probaron la plataforma en modo prueba. No depende del filtro de fecha. Solo lo ve la cuenta de administrador.</p>
+        <div class="kpis" id="fbKpis"></div>
+        <div class="grid2" style="margin-top:16px">
+          <div class="card"><h3>Facilidad por módulo</h3><p class="hint">Media de 1 (muy difícil) a 7 (muy fácil), entre quienes lo probaron. Entre paréntesis, cuántas personas.</p><div class="chart" id="chFbMod"></div></div>
+          <div class="card"><h3>Palabras elegidas</h3><p class="hint">Cada persona elige 3 palabras para describir la plataforma.</p>
+            <div class="legend"><span><i style="background:var(--mark)"></i>Positiva</span><span><i style="background:var(--mark-2)"></i>Negativa</span></div>
+            <div class="chart" id="chFbPal"></div></div>
+        </div>
+        <div class="card" style="margin-top:16px">
+          <h3>Respuestas abiertas <button type="button" class="view-toggle" id="fbExcel">Descargar respuestas (Excel)</button></h3>
+          <p class="hint">Lo que más gustó, dónde se trabaron y qué cambiarían. Las más recientes primero.</p>
+          <div id="fbAbiertas"></div>
+        </div>
       </section>
 
       <section id="s-respaldo" class="solo-admin" hidden>
@@ -624,9 +649,54 @@
 
   function pintar(){ resumen(); alumnos(); categorias(); katas(); rendimiento(); combates(); }
 
+  /* ------------------------------------------------------------ feedback de la prueba (solo admin) */
+  const POSITIVAS = new Set(['Clara', 'Rápida', 'Útil', 'Confiable', 'Moderna', 'Profesional', 'Intuitiva', 'Ordenada']);
+  const umux = (r) => ((r.umux_capacidades - 1) + (r.umux_facilidad - 1)) / 12 * 100;
+  let FB = [];
+  async function feedback(){
+    const { data, error } = await sb.schema('public').from('encuestas_feedback').select('*, perfiles(nombre, email)').order('creado_en', { ascending: false });
+    if (error){ $('fbKpis').innerHTML = `<div class="kpi"><div class="k-label">No se pudo cargar el feedback</div><div class="k-note">${esc(mensajeError(error))}</div></div>`; return; }
+    FB = data || [];
+    const n = FB.length, media = (xs) => xs.length ? xs.reduce((a, b) => a + b, 0) / xs.length : null;
+    const u = media(FB.map(umux)), conf = media(FB.map(r => r.confianza));
+    const disp = ['Celular', 'Tablet', 'Computador'].map(d => `${FB.filter(r => r.dispositivo === d).length} ${d.toLowerCase()}`).join(' · ');
+    $('fbKpis').innerHTML =
+      kpi('Respuestas', n, n ? disp : 'Aún nadie ha respondido', true) +
+      kpi('UMUX-Lite', u == null ? '—' : Math.round(u), u == null ? 'Escala 0–100' : (u >= 80 ? 'Excelente (≥ 80)' : u >= 68 ? 'Sobre el promedio (≥ 68)' : 'Bajo el promedio (< 68)')) +
+      kpi('Confianza', conf == null ? '—' : N1(conf), 'Para resultados oficiales, de 1 a 7') +
+      kpi('Aceptan entrevista', n ? `${FB.filter(r => r.contacto).length}` : '—', n ? `de ${n} personas` : '');
+    const porMod = {};
+    FB.forEach(r => Object.entries(r.facilidad || {}).forEach(([m, v]) => (porMod[m] = porMod[m] || []).push(Number(v))));
+    const mods = Object.entries(porMod).map(([m, vs]) => ({ label: `${m} (${vs.length})`, value: media(vs), tip: `${m} · ${vs.length} respuesta${vs.length === 1 ? '' : 's'}` })).sort((a, b) => a.value - b.value);
+    if (mods.length) barrasH($('chFbMod'), mods, { fmt: N1, max: 7 }); else vacio($('chFbMod'), 'Aún no hay respuestas.');
+    const cuenta = {}; FB.forEach(r => (r.palabras || []).forEach(p => cuenta[p] = (cuenta[p] || 0) + 1));
+    const pals = Object.entries(cuenta).sort((a, b) => b[1] - a[1]).map(([p, c]) => ({ label: p, value: c, color: POSITIVAS.has(p) ? 'var(--mark)' : 'var(--mark-2)', tip: `${p} · ${POSITIVAS.has(p) ? 'positiva' : 'negativa'}` }));
+    if (pals.length) barrasH($('chFbPal'), pals, { fmt: (v) => v }); else vacio($('chFbPal'), 'Aún no hay respuestas.');
+    const cita = (t, txt) => txt ? `<p class="fb-cita"><em>${t}</em>${esc(txt)}</p>` : '';
+    $('fbAbiertas').innerHTML = n ? FB.map(r => `<div class="fb-resp">
+        <div class="fb-cab"><b>${esc(r.perfiles?.nombre || 'Sin nombre')}</b>
+          <span>${esc(r.rol || 'Sin rol')} · ${esc(r.dispositivo || '')} · ${new Date(r.creado_en).toLocaleDateString('es-CL', { day: 'numeric', month: 'short' })} · UMUX ${Math.round(umux(r))} · Confianza ${r.confianza}/7</span>
+          ${r.contacto ? `<span class="tag kata">Acepta entrevista${r.perfiles?.email ? ': ' + esc(r.perfiles.email) : ''}</span>` : ''}</div>
+        ${cita('Lo que más le gustó', r.gusto)}${cita('Dónde se trabó', r.trabas)}${cita('Lo que cambiaría', r.cambio)}
+        ${!r.gusto && !r.trabas && !r.cambio ? '<p class="fb-cita" style="color:var(--muted)">Sin comentarios escritos.</p>' : ''}
+        <div class="fb-pal">${(r.palabras || []).map(p => `<span class="tag">${esc(p)}</span>`).join('')}</div>
+      </div>`).join('') : '<div class="empty">Cuando alguien responda la encuesta del modo prueba, sus comentarios aparecerán aquí.</div>';
+  }
+  $('fbExcel').addEventListener('click', async () => {
+    if (!FB.length) return;
+    await cargarJS('https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js', 'XLSX');
+    const filas = FB.map(r => ({ fecha: new Date(r.creado_en).toLocaleString('es-CL'), nombre: r.perfiles?.nombre || '', correo: r.contacto ? (r.perfiles?.email || '') : '',
+      rol: r.rol || '', dispositivo: r.dispositivo || '', modulos: (r.modulos || []).join(', '), ...Object.fromEntries(Object.entries(r.facilidad || {}).map(([m, v]) => ['facilidad ' + m, v])),
+      umux_capacidades: r.umux_capacidades, umux_facilidad: r.umux_facilidad, umux_lite: Math.round(umux(r)), confianza: r.confianza,
+      palabras: (r.palabras || []).join(', '), gusto: r.gusto || '', trabas: r.trabas || '', cambio: r.cambio || '', acepta_entrevista: r.contacto ? 'Sí' : 'No',
+      paginas_visitadas: (r.paginas || []).map(v => v.p).join(' → '), pantalla: r.pantalla || '' }));
+    const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(filas), 'Respuestas');
+    XLSX.writeFile(wb, `Feedback-Liga-WUKF_${new Date().toISOString().slice(0, 10)}.xlsx`);
+  });
+
   /* ------------------------------------------------------------ respaldo (solo admin, liga real) */
   const TABLAS_RESPALDO = ['temporadas', 'fechas', 'grados', 'katas', 'competidores', 'categorias', 'inscripciones',
-    'kata_presentaciones', 'kumite_combates', 'perfiles', 'perfil_competidor'];
+    'kata_presentaciones', 'kumite_combates', 'perfiles', 'perfil_competidor', 'encuestas_feedback'];
   const cargarJS = (url, global) => window[global] ? Promise.resolve() : new Promise((ok, mal) => {
     const s = document.createElement('script'); s.src = url; s.onload = ok; s.onerror = () => mal(new Error('Sin conexión para preparar el Excel.')); document.head.appendChild(s);
   });
@@ -677,7 +747,7 @@
 
   async function iniciar(staff){
     $('gate').hidden = true; $('app').hidden = false;
-    if (staff && staff.rol === 'admin' && window.LIGA_MODO !== 'prueba') document.querySelectorAll('.solo-admin').forEach(e => e.hidden = false);
+    if (staff && staff.rol === 'admin' && window.LIGA_MODO !== 'prueba'){ document.querySelectorAll('.solo-admin').forEach(e => e.hidden = false); feedback(); }
     $('kpis').innerHTML = '<div class="kpi"><div class="skeleton"></div></div>'.repeat(5);
     try {
       D = await cargar();
