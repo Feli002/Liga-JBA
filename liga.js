@@ -10,7 +10,9 @@ const LIGA = {
   key: 'sb_publishable_9e6qqnmHHkYTwX1-HMH7XQ_iOmTQXUt'
 };
 
-const sb = supabase.createClient(LIGA.url, LIGA.key);
+/* Modo prueba (modo.js): mismo proyecto y mismas cuentas, otro esquema de datos */
+const LIGA_ESQ = window.LIGA_ESQUEMA || 'public';
+const sb = supabase.createClient(LIGA.url, LIGA.key, { db: { schema: LIGA_ESQ } });
 
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c =>
   ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
@@ -53,6 +55,10 @@ async function sesionStaff() {
 
 /* Formulario de login dentro de un contenedor. Llama a onOk(staff) al entrar. */
 function formLogin(contenedor, onOk, { titulo = 'Ingresa como mesa', texto = 'Usa la cuenta de mesa o administrador. La sesión queda guardada en este dispositivo.', onCancel } = {}) {
+  if (window.LIGA_MODO === 'prueba'){
+    titulo = 'Ingresa con tu cuenta';
+    texto = 'Estás en el modo prueba: usa la cuenta con la que te registraste. Nada de lo que hagas aquí cambia la liga real.';
+  }
   contenedor.innerHTML = `
     <form class="login" novalidate>
       <h2 class="modal-title">${esc(titulo)}</h2>
@@ -66,6 +72,7 @@ function formLogin(contenedor, onOk, { titulo = 'Ingresa como mesa', texto = 'Us
         ${onCancel ? '<button type="button" class="btn ghost" data-cancel>Cancelar</button>' : ''}
         <button type="submit" class="btn primary">Ingresar</button>
       </div>
+      <p class="modal-text" style="margin:16px 0 0;font-size:1rem">¿No tienes cuenta? <a href="registro.html" style="color:inherit">Regístrate para probar la plataforma</a>.</p>
     </form>`;
   const form = contenedor.querySelector('form');
   const err = form.querySelector('.form-error');
@@ -90,7 +97,10 @@ function formLogin(contenedor, onOk, { titulo = 'Ingresa como mesa', texto = 'Us
     const staff = await sesionStaff();
     if (!staff) {
       await sb.auth.signOut();
-      err.textContent = 'Tu cuenta no tiene permisos de mesa. Pide al administrador que te los asigne.';
+      err.innerHTML = window.LIGA_MODO === 'prueba'
+        ? 'No pudimos validar tu cuenta. Inténtalo otra vez.'
+        : 'Tu cuenta aún no tiene permisos de mesa en la liga real. Puedes probar todas las funciones en el modo prueba. <button type="button" class="btn ghost" data-ir-prueba style="margin-top:10px;display:block">Ir al modo prueba</button>';
+      err.querySelector('[data-ir-prueba]')?.addEventListener('click', () => window.entrarModoPrueba(location.pathname.split('/').pop() || 'index.html'));
       err.hidden = false; boton.disabled = false; boton.textContent = 'Ingresar'; return;
     }
     onOk(staff);

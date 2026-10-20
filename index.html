@@ -91,6 +91,9 @@
   .disc-desc{ font-size:0.875rem; letter-spacing:0.02em; opacity:0.9; max-width:30ch; }
   .disc-cta{ margin-top:16px; display:inline-flex; align-items:center; gap:6px; font-size:0.875rem; letter-spacing:0.1em; text-transform:uppercase; font-weight:600; opacity:0.95; }
 
+  .guia{ background:#fff; border:1px solid var(--line); border-left:6px solid #c98a2e; border-radius:16px; padding:16px 18px; margin:0 0 20px; text-align:left; font-size:1rem; line-height:1.45; }
+  .guia ol{ margin:8px 0 8px; padding-left:22px; display:grid; gap:4px; }
+  .guia small{ color:#676c66; font-size:0.875rem; }
   .links{ display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; margin-top:20px; }
   .link-btn{
     background:none; border:none; padding:8px 0; font-family:'Oswald', sans-serif; font-size:1rem;
@@ -159,6 +162,17 @@
     <h1 class="title">Liga de Karate <span>WUKF</span></h1>
     <div class="date-pill" id="todayDate">—</div>
 
+    <div class="guia" id="guiaPrueba" hidden>
+      <b>Qué puedes probar</b>
+      <ol>
+        <li><b>Iniciar nueva fecha</b> (o entrar a la fecha en curso) con los jueces de mesa.</li>
+        <li><b>Kata:</b> marca presentes, ordena, elige la kata y pon las notas de 3 o 5 jueces.</li>
+        <li><b>Kumite:</b> arma la llave, pelea con el marcador y abre la pantalla de proyección.</li>
+        <li><b>Tabla general</b> y la <b>hoja de resultados</b> para WhatsApp; el <b>dashboard</b> por alumno.</li>
+      </ol>
+      <small>Si algo queda raro, usa “Restablecer datos” en la franja dorada de arriba.</small>
+    </div>
+
     <!-- Cargando -->
     <div class="panel" id="vistaCargando">
       <div class="cards"><div class="skeleton"></div><div class="skeleton"></div></div>
@@ -181,7 +195,8 @@
           <div class="disc-cta">Ver tabla →</div>
         </a>
       </div>
-      <div class="links" style="justify-content:flex-end">
+      <div class="links">
+        <a class="link-btn solo-real" href="registro.html">Probar la plataforma</a>
         <a class="link-btn" href="dashboard.html">Dashboard de resultados →</a>
       </div>
     </div>
@@ -223,6 +238,7 @@
 
       <div class="links">
         <button class="link-btn danger" id="btnFinalizar" type="button">Finalizar fecha</button>
+        <a class="link-btn solo-real" href="registro.html">Probar la plataforma</a>
         <span style="display:flex;gap:20px;flex-wrap:wrap">
           <a class="link-btn" href="dashboard.html">Dashboard</a>
           <a class="link-btn" href="tabla-general.html">Ver tabla general →</a>
@@ -237,8 +253,16 @@
     <div class="modal" id="modalBody"></div>
   </div>
 
+<script src="modo.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.js"></script>
 <script src="liga.js"></script>
+<script>
+  // Modo prueba: guía visible y sin enlaces de registro
+  if (window.LIGA_MODO === 'prueba'){
+    document.getElementById('guiaPrueba').hidden = false;
+    document.querySelectorAll('.solo-real').forEach(e => e.remove());
+  }
+</script>
 <script>
   const $ = (id) => document.getElementById(id);
   let enCurso = null, staff = null, reloj = null;

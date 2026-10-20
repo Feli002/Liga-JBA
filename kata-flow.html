@@ -513,6 +513,7 @@
   </form>
 </div>
 
+<script src="modo.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.js"></script>
 <script src="liga.js"></script>
 <script>
@@ -521,8 +522,8 @@
   const fmt = (n) => Number(n).toFixed(1).replace('.', ',');
   const showScreen = (id) => { document.querySelectorAll('.screen').forEach(s => s.classList.toggle('active', s.id === id)); window.scrollTo(0, 0); };
   const toast = (t) => { const d = document.createElement('div'); d.className = 'toast'; d.textContent = t; document.body.appendChild(d); setTimeout(() => d.remove(), 3500); };
-  const guardarLocal = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} };
-  const leerLocal = (k) => { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } };
+  const guardarLocal = (k, v) => { try { localStorage.setItem(ligaClave(k), JSON.stringify(v)); } catch (e) {} };
+  const leerLocal = (k) => { try { return JSON.parse(localStorage.getItem(ligaClave(k))); } catch (e) { return null; } };
 
   let fecha = null, categorias = [], katas = [], grados = [];
   let cat = null;          // categoría elegida
