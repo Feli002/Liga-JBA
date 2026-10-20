@@ -1393,6 +1393,7 @@
 
   // ===================== AGREGAR COMPETIDOR =====================
   const fAdd = $('fAdd');
+  const extra = agregarExtra({ form: fAdd, modalidad: 'Kumite', fecha: () => fecha, cat: () => cat });
   fAdd.querySelectorAll('input[name=modo]').forEach(r => r.addEventListener('change', () => {
     $('modoExiste').hidden = fAdd.modo.value !== 'existe'; $('modoNuevo').hidden = fAdd.modo.value !== 'nuevo';
   }));
@@ -1404,6 +1405,7 @@
     fAdd.grado.innerHTML = grados.map(g => `<option value="${g.orden}">${esc(g.nombre)}</option>`).join('');
     $('modoExiste').hidden = false; $('modoNuevo').hidden = true; fAdd.querySelector('.form-error').hidden = true;
     $('addModal').classList.add('open');
+    await extra.abrir();
   });
   $('addCancel').addEventListener('click', () => $('addModal').classList.remove('open'));
   fAdd.addEventListener('submit', async (e) => {
@@ -1415,15 +1417,22 @@
     if (fAdd.modo.value === 'nuevo'){
       const nombre = fAdd.nombre.value.trim(), apellido = fAdd.apellido.value.trim();
       if (!nombre || !apellido) return falla('Nombre y apellido son obligatorios.');
-      const { data, error } = await sb.from('competidores').insert({ nombre, apellido, sexo: fAdd.sexo.value, grado_actual: Number(fAdd.grado.value), fecha_nacimiento: fAdd.nac.value || null, observaciones: `Agregado por la mesa en la Fecha ${fecha.numero}` }).select('id').single();
-      if (error) return falla(mensajeError(error));
-      compId = data.id;
+      const dup = await extra.revisarDuplicado(nombre, apellido);
+      if (dup.usarId){
+        if (nomina.some(n => n.compId === dup.usarId)) return falla('Esa persona ya está en esta categoría.');
+        compId = dup.usarId;
+      } else {
+        const { data, error } = await sb.from('competidores').insert({ nombre, apellido, sexo: fAdd.sexo.value, grado_actual: Number(fAdd.grado.value), fecha_nacimiento: fAdd.nac.value || null, observaciones: `Agregado por la mesa en la Fecha ${fecha.numero}` }).select('id').single();
+        if (error) return falla(mensajeError(error));
+        compId = data.id;
+      }
     }
     if (!compId) return falla('Elige un competidor.');
     const { error } = await sb.from('inscripciones').insert({ categoria_id: cat.id, competidor_id: compId, presente: true });
     if (error) return falla(mensajeError(error));
+    const extraMsg = await extra.inscribirOtra(compId);
     ok.disabled = false; $('addModal').classList.remove('open');
-    await cargarNomina(); toast('Competidor agregado a la categoría');
+    await cargarNomina(); toast('Competidor agregado a la categoría' + extraMsg);
   });
 
   pintarMarcador();

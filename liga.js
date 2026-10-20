@@ -172,3 +172,133 @@ function abrirModalCategoria({ fecha, modalidad, categorias, grados, categoria =
     onGuardado(data);
   });
 }
+
+/* ---------- Agregar competidor: aviso de duplicados + inscribir también en la otra modalidad ----------
+   Uso (en kata-flow y kumite-scoreboard):
+     const extra = agregarExtra({ form, modalidad: 'Kata', fecha: () => fecha, cat: () => cat });
+     extra.abrir();                              // al abrir el modal
+     const r = extra.revisarDuplicado(n, a);     // antes de crear una ficha nueva: 'seguir' | 'esperar' | { usarId }
+     const msg = await extra.inscribirOtra(id);  // después de inscribir en la categoría actual
+*/
+const normNombre = (s) => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/\s+/g, ' ').trim();
+
+function agregarExtra({ form, modalidad, fecha, cat }){
+  const otra = modalidad === 'Kata' ? 'Kumite' : 'Kata';
+  if (!document.getElementById('agregar-extra-css')){
+    const st = document.createElement('style'); st.id = 'agregar-extra-css';
+    st.textContent = `
+      .dup-aviso{ border-left:4px solid #c98a2e; background:rgba(201,138,46,0.14); border-radius:10px; padding:12px 14px; margin:0 0 14px; font-size:1rem; line-height:1.4; }
+      .dup-aviso b{ font-weight:600; }
+      .dup-aviso .dup-acc{ display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
+      .dup-aviso button{ font-family:inherit; font-size:0.875rem; font-weight:600; letter-spacing:0.03em; border-radius:999px; padding:8px 12px; min-height:36px; cursor:pointer; border:1px solid currentColor; background:transparent; color:inherit; }
+      .dup-aviso button.si{ background:#c98a2e; border-color:#c98a2e; color:#1c2320; }
+      .otra-mod{ border:1px dashed rgba(127,127,127,0.5); border-radius:12px; padding:12px 14px; margin:0 0 14px; }
+      .otra-mod .chk{ display:flex; align-items:center; gap:10px; font-size:1.125rem; cursor:pointer; }
+      .otra-mod .chk input{ width:20px; height:20px; accent-color:#c98a2e; flex:none; }
+      .otra-mod .field{ margin:12px 0 0; }
+      .otra-mod .nota{ font-size:0.875rem; margin:8px 0 0; line-height:1.4; opacity:0.85; }
+      .otra-mod .nota.pasada{ opacity:1; border-left:4px solid #c98a2e; padding-left:10px; }`;
+    document.head.appendChild(st);
+  }
+  const caja = document.createElement('div');
+  caja.innerHTML = `
+    <div class="dup-aviso" hidden></div>
+    <div class="otra-mod">
+      <label class="chk"><input type="checkbox" name="otraMod"> ¿Inscribirlo también en ${otra}?</label>
+      <div class="otra-detalle" hidden>
+        <label class="field"><span>Categoría de ${otra}</span><select name="otraCat"></select></label>
+        <p class="nota"></p>
+      </div>
+    </div>`;
+  const errEl = form.querySelector('.form-error');
+  errEl.before(...caja.children);
+  const aviso = form.querySelector('.dup-aviso'), chk = form.otraMod, det = form.querySelector('.otra-detalle'),
+        sel = form.otraCat, nota = form.querySelector('.otra-mod .nota');
+  let catsOtra = [], todos = [], decision = null;   // decision: null | 'nuevo' (confirmó que es otra persona)
+
+  const pintarNota = () => {
+    const c = catsOtra.find(x => String(x.id) === sel.value);
+    nota.className = 'nota' + (c && c.pasada ? ' pasada' : '');
+    nota.textContent = !c ? '' : c.pasada
+      ? `Esta categoría ya se compitió${modalidad === 'Kata' ? ' (hay combates guardados)' : ' (ya tiene notas)'}. Igual queda inscrito y presente, pero no entra ${otra === 'Kumite' ? 'a la llave ni al podio ya jugados' : 'al orden ni al podio ya cerrados'}: avisa a la mesa de ${otra}.`
+      : `Queda inscrito y presente en ${otra}; la mesa de ${otra} lo verá en su nómina.`;
+  };
+  chk.addEventListener('change', () => { det.hidden = !chk.checked; pintarNota(); });
+  sel.addEventListener('change', pintarNota);
+
+  async function abrir(){
+    aviso.hidden = true; decision = null; chk.checked = false; det.hidden = true;
+    sel.innerHTML = '<option value="">Cargando…</option>';
+    const f = fecha(), c = cat();
+    const [{ data: cs }, { data: comps }] = await Promise.all([
+      sb.from('categorias').select('id, nombre, codigo').eq('fecha_id', f.id).eq('modalidad', otra).order('codigo'),
+      sb.from('competidores').select('id, nombre, apellido').eq('activo', true)
+    ]);
+    todos = comps || [];
+    catsOtra = cs || [];
+    const ids = catsOtra.map(x => x.id);
+    if (ids.length){
+      const [{ data: ins }, { data: comb }] = await Promise.all([
+        sb.from('inscripciones').select('id, categoria_id, lugar').in('categoria_id', ids),
+        otra === 'Kumite' ? sb.from('kumite_combates').select('categoria_id').in('categoria_id', ids) : Promise.resolve({ data: [] })
+      ]);
+      let conNotas = new Set();
+      if (otra === 'Kata' && ins && ins.length){
+        const { data: kp } = await sb.from('kata_presentaciones').select('inscripcion_id').in('inscripcion_id', ins.map(i => i.id));
+        const insCat = new Map(ins.map(i => [i.id, i.categoria_id]));
+        conNotas = new Set((kp || []).map(k => insCat.get(k.inscripcion_id)));
+      }
+      const conLugar = new Set((ins || []).filter(i => i.lugar != null).map(i => i.categoria_id));
+      const conComb = new Set((comb || []).map(k => k.categoria_id));
+      catsOtra.forEach(x => x.pasada = conLugar.has(x.id) || conComb.has(x.id) || conNotas.has(x.id));
+    }
+    // Sugerencia: la categoría "gemela" (mismo nombre cambiando KATA ↔ KUMITE)
+    // edad ("3 a 4 años", "7 años", "adulto") y sexo deciden la categoría sugerida
+    const perfil = (n) => { const t = normNombre(n);
+      const edad = /adulto/.test(t) ? 'adulto' : ((t.match(/(\d+)(?:\s+a\s+(\d+))?\s+anos/) || []).slice(1).filter(Boolean).join('-'));
+      const sexo = (t.match(/masculino|femenino|mixto/) || [''])[0]; return { edad, sexo }; };
+    const base = c ? perfil(c.nombre) : null;
+    let sug = null, mejor = 0;
+    if (base && base.edad) catsOtra.forEach(x => { const p = perfil(x.nombre); if (p.edad !== base.edad) return;
+      const pts = 10 + (p.sexo === base.sexo ? 2 : (!p.sexo || !base.sexo || p.sexo === 'mixto' || base.sexo === 'mixto') ? 1 : -20);
+      if (pts > mejor){ mejor = pts; sug = x; } });
+    sel.innerHTML = catsOtra.length
+      ? (sug ? '' : '<option value="">Elige la categoría</option>') + catsOtra.map(x => `<option value="${x.id}" ${sug && sug.id === x.id ? 'selected' : ''}>${esc(x.nombre)}${x.pasada ? ' · ya se compitió' : ''}</option>`).join('')
+      : `<option value="">No hay categorías de ${otra} en esta fecha</option>`;
+    chk.disabled = !catsOtra.length;
+    pintarNota();
+  }
+
+  /* Antes de crear una ficha nueva: ¿ya existe alguien con ese nombre? */
+  function revisarDuplicado(nombre, apellido){
+    if (decision === 'nuevo') return 'seguir';
+    const clave = normNombre(`${nombre} ${apellido}`);
+    const iguales = todos.filter(p => normNombre(`${p.nombre} ${p.apellido}`) === clave);
+    if (!iguales.length) return 'seguir';
+    const p = iguales[0];
+    return new Promise((ok) => {
+      aviso.hidden = false;
+      aviso.innerHTML = `Ya existe <b>${esc(p.nombre)} ${esc(p.apellido)}</b> en la nómina${iguales.length > 1 ? ` (${iguales.length} fichas)` : ''}. ¿Es la misma persona?
+        <div class="dup-acc"><button type="button" class="si">Sí, usar esa ficha</button><button type="button" class="no">No, es otra persona</button></div>`;
+      aviso.querySelector('.si').addEventListener('click', () => { aviso.hidden = true; ok({ usarId: p.id }); });
+      aviso.querySelector('.no').addEventListener('click', () => { aviso.hidden = true; decision = 'nuevo'; ok('seguir'); });
+      aviso.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    });
+  }
+
+  /* Después de inscribir en la categoría actual */
+  async function inscribirOtra(compId){
+    if (!chk.checked || !sel.value) return '';
+    const catId = Number(sel.value), c = catsOtra.find(x => x.id === catId);
+    const { data: ya } = await sb.from('inscripciones').select('id, presente').eq('categoria_id', catId).eq('competidor_id', compId).maybeSingle();
+    if (ya){
+      if (!ya.presente) await sb.from('inscripciones').update({ presente: true }).eq('id', ya.id);
+      return ` y ya estaba en ${otra} (${c ? c.nombre : ''})`;
+    }
+    const { error } = await sb.from('inscripciones').insert({ categoria_id: catId, competidor_id: compId, presente: true });
+    if (error) return `, pero no se pudo inscribir en ${otra}: ${mensajeError(error)}`;
+    return ` y en ${otra}${c && c.pasada ? ' (categoría ya competida: avisa a la mesa)' : ''}`;
+  }
+
+  return { abrir, revisarDuplicado, inscribirOtra };
+}
