@@ -75,7 +75,7 @@
   async function datos(anio, numero) {
     const r = await fetch(`${SB_URL}/rest/v1/rpc/hoja_resultados`, {
       method: 'POST',
-      headers: { apikey: SB_KEY, 'Content-Type': 'application/json' },
+      headers: { apikey: SB_KEY, 'Content-Type': 'application/json', ...(window.LIGA_PERFIL || {}) },
       body: JSON.stringify({ p_anio: anio, p_numero: numero })
     });
     if (!r.ok) throw new Error('HTTP ' + r.status);

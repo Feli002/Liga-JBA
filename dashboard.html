@@ -125,6 +125,8 @@
   .btn.ghost{ background:#fff; color:var(--ink); border-color:var(--line); }
   .btn:disabled{ background:var(--muted); color:#fff; }
 
+  .respaldo{ display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap:20px; }
+  .respaldo .btn{ width:100%; }
   .skeleton{ height:14px; border-radius:7px; background:linear-gradient(90deg,var(--sunk),#f7f5ef,var(--sunk)); background-size:200% 100%; animation:sh 1.2s infinite; margin:14px 0; }
   @keyframes sh{ to{ background-position:-200% 0; } }
   .refreshing{ opacity:0.55; transition:opacity .2s; }
@@ -156,7 +158,7 @@
       <span class="lbl">Fecha</span>
       <div class="seg" id="fFecha"></div>
       <nav class="nav" aria-label="Secciones">
-        <a href="#s-alumnos">Alumnos</a><a href="#s-categorias">Categorías</a><a href="#s-katas">Katas</a><a href="#s-rendimiento">Rendimiento</a><a href="#s-combates">Combates</a>
+        <a href="#s-alumnos">Alumnos</a><a href="#s-categorias">Categorías</a><a href="#s-katas">Katas</a><a href="#s-rendimiento">Rendimiento</a><a href="#s-combates">Combates</a><a href="#s-respaldo" class="solo-admin" hidden>Respaldo</a>
       </nav>
     </div>
 
@@ -223,12 +225,27 @@
         </div>
         <div class="card" style="margin-top:16px"><h3>Combates más largos</h3><div class="tbl-wrap"><table id="tDur"></table></div></div>
       </section>
+
+      <section id="s-respaldo" class="solo-admin" hidden>
+        <h2 class="section-title">Respaldo de la base</h2>
+        <p class="section-sub">Descarga una copia completa de la liga real para guardarla en tu computador. Solo lo ve la cuenta de administrador.</p>
+        <div class="card">
+          <div class="respaldo">
+            <div><h3>Excel</h3><p class="hint">Una hoja por tabla: competidores, fechas, categorías, inscripciones, notas de Kata, combates, usuarios registrados…</p>
+              <button type="button" class="btn primary" data-respaldo="xlsx">Descargar Excel</button></div>
+            <div><h3>JSON</h3><p class="hint">Copia exacta de los datos, útil para restaurar la base si algún día hace falta.</p>
+              <button type="button" class="btn ghost" data-respaldo="json">Descargar JSON</button></div>
+          </div>
+          <p class="hint" id="respEstado" role="status" aria-live="polite" style="margin:14px 0 0"></p>
+        </div>
+      </section>
     </div>
   </div>
 </div>
 
 <footer id="pie">WUKF · Liga de Karate</footer>
 
+<script src="modo.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.js"></script>
 <script src="liga.js"></script>
 <script>
@@ -607,8 +624,60 @@
 
   function pintar(){ resumen(); alumnos(); categorias(); katas(); rendimiento(); combates(); }
 
-  async function iniciar(){
+  /* ------------------------------------------------------------ respaldo (solo admin, liga real) */
+  const TABLAS_RESPALDO = ['temporadas', 'fechas', 'grados', 'katas', 'competidores', 'categorias', 'inscripciones',
+    'kata_presentaciones', 'kumite_combates', 'perfiles', 'perfil_competidor'];
+  const cargarJS = (url, global) => window[global] ? Promise.resolve() : new Promise((ok, mal) => {
+    const s = document.createElement('script'); s.src = url; s.onload = ok; s.onerror = () => mal(new Error('Sin conexión para preparar el Excel.')); document.head.appendChild(s);
+  });
+  async function leerTabla(t){
+    let filas = [], desde = 0;
+    for (;;){
+      const { data, error } = await sb.from(t).select('*').range(desde, desde + 999);
+      if (error) throw new Error(`${t}: ${mensajeError(error)}`);
+      filas = filas.concat(data || []);
+      if (!data || data.length < 1000) return filas;
+      desde += 1000;
+    }
+  }
+  function bajarArchivo(blob, nombre){
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = nombre;
+    document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+  }
+  async function respaldo(formato, boton){
+    const st = $('respEstado'), botones = document.querySelectorAll('[data-respaldo]');
+    botones.forEach(b => b.disabled = true); st.style.color = ''; st.textContent = 'Leyendo la base…';
+    try {
+      const datos = {};
+      for (const t of TABLAS_RESPALDO){ st.textContent = `Leyendo ${t}…`; datos[t] = await leerTabla(t); }
+      const ahora = new Date(), p2 = (n) => String(n).padStart(2, '0');
+      const sello = `${ahora.getFullYear()}-${p2(ahora.getMonth() + 1)}-${p2(ahora.getDate())}_${p2(ahora.getHours())}${p2(ahora.getMinutes())}`;
+      const total = Object.values(datos).reduce((a, f) => a + f.length, 0);
+      if (formato === 'json'){
+        const json = JSON.stringify({ liga: 'Liga de Karate WUKF', proyecto: 'Liga_JBA', generado: ahora.toISOString(), tablas: datos }, null, 1);
+        bajarArchivo(new Blob([json], { type: 'application/json' }), `Respaldo-Liga-WUKF_${sello}.json`);
+      } else {
+        await cargarJS('https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js', 'XLSX');
+        const wb = XLSX.utils.book_new();
+        const resumen = [['Respaldo Liga de Karate WUKF'], ['Generado', ahora.toLocaleString('es-CL')], [], ['Tabla', 'Filas'],
+          ...TABLAS_RESPALDO.map(t => [t, datos[t].length])];
+        XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(resumen), 'Resumen');
+        for (const t of TABLAS_RESPALDO){
+          const filas = datos[t].map(r => Object.fromEntries(Object.entries(r).map(([k, v]) => [k, v !== null && typeof v === 'object' ? JSON.stringify(v) : v])));
+          XLSX.utils.book_append_sheet(wb, filas.length ? XLSX.utils.json_to_sheet(filas) : XLSX.utils.aoa_to_sheet([['(sin filas)']]), t.slice(0, 31));
+        }
+        XLSX.writeFile(wb, `Respaldo-Liga-WUKF_${sello}.xlsx`);
+      }
+      st.textContent = `Listo: ${total} filas de ${TABLAS_RESPALDO.length} tablas.`;
+    } catch (e) {
+      st.style.color = 'var(--aka)'; st.textContent = 'No se pudo descargar el respaldo. ' + (e.message || '');
+    } finally { botones.forEach(b => b.disabled = false); }
+  }
+  document.querySelectorAll('[data-respaldo]').forEach(b => b.addEventListener('click', () => respaldo(b.dataset.respaldo, b)));
+
+  async function iniciar(staff){
     $('gate').hidden = true; $('app').hidden = false;
+    if (staff && staff.rol === 'admin' && window.LIGA_MODO !== 'prueba') document.querySelectorAll('.solo-admin').forEach(e => e.hidden = false);
     $('kpis').innerHTML = '<div class="kpi"><div class="skeleton"></div></div>'.repeat(5);
     try {
       D = await cargar();
@@ -625,8 +694,8 @@
 
   (async () => {
     const staff = await sesionStaff();
-    if (staff) return iniciar();
-    formLogin($('gateCard'), () => iniciar(), { titulo: 'Ingresa como mesa', texto: 'El dashboard es solo para la mesa y la administración de la liga.' });
+    if (staff) return iniciar(staff);
+    formLogin($('gateCard'), (s) => iniciar(s), { titulo: 'Ingresa como mesa', texto: 'El dashboard es solo para la mesa y la administración de la liga.' });
   })();
 </script>
 </body>

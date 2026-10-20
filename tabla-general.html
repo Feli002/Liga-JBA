@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Tabla general — WUKF</title>
+<script src="modo.js"></script>
 <script src="hoja.js" defer></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -206,7 +207,7 @@
   const fechaLarga = (d) => d ? new Date(d + 'T12:00:00').toLocaleDateString('es-CL', { day:'numeric', month:'long' }) : '';
 
   async function api(path){
-    const r = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, { headers: { apikey: SUPABASE_KEY } });
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, { headers: { apikey: SUPABASE_KEY, ...(window.LIGA_PERFIL || {}) } });
     if (!r.ok) throw new Error(`HTTP ${r.status}`);
     return r.json();
   }

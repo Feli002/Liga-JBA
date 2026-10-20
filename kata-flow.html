@@ -513,6 +513,7 @@
   </form>
 </div>
 
+<script src="modo.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.js"></script>
 <script src="liga.js"></script>
 <script>
@@ -521,8 +522,8 @@
   const fmt = (n) => Number(n).toFixed(1).replace('.', ',');
   const showScreen = (id) => { document.querySelectorAll('.screen').forEach(s => s.classList.toggle('active', s.id === id)); window.scrollTo(0, 0); };
   const toast = (t) => { const d = document.createElement('div'); d.className = 'toast'; d.textContent = t; document.body.appendChild(d); setTimeout(() => d.remove(), 3500); };
-  const guardarLocal = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} };
-  const leerLocal = (k) => { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } };
+  const guardarLocal = (k, v) => { try { localStorage.setItem(ligaClave(k), JSON.stringify(v)); } catch (e) {} };
+  const leerLocal = (k) => { try { return JSON.parse(localStorage.getItem(ligaClave(k))); } catch (e) { return null; } };
 
   let fecha = null, categorias = [], katas = [], grados = [];
   let cat = null;          // categoría elegida
@@ -676,6 +677,7 @@
 
   // ===================== AGREGAR COMPETIDOR =====================
   const fAdd = $('fAdd');
+  const extra = agregarExtra({ form: fAdd, modalidad: 'Kata', fecha: () => fecha, cat: () => cat });
   let modo = 'existe';
   fAdd.querySelectorAll('[data-modo]').forEach(b => b.addEventListener('click', () => {
     modo = b.dataset.modo;
@@ -693,6 +695,7 @@
     fAdd.querySelector('.form-error').hidden = true;
     fAdd.reset(); fAdd.querySelector('[data-modo="existe"]').click();
     $('addModal').classList.add('open');
+    await extra.abrir();
   });
   $('addCancel').addEventListener('click', () => $('addModal').classList.remove('open'));
   fAdd.addEventListener('submit', async (e) => {
@@ -704,22 +707,29 @@
     if (modo === 'nuevo'){
       const nombre = fAdd.nombre.value.trim(), apellido = fAdd.apellido.value.trim();
       if (!nombre || !apellido) return falla('Nombre y apellido son obligatorios.');
-      const { data, error } = await sb.from('competidores').insert({
-        nombre, apellido, sexo: fAdd.sexo.value, grado_actual: Number(fAdd.grado.value),
-        fecha_nacimiento: fAdd.nac.value || null, observaciones: `Agregado por la mesa en la Fecha ${fecha.numero}`
-      }).select('id').single();
-      if (error) return falla(mensajeError(error));
-      compId = data.id;
+      const dup = await extra.revisarDuplicado(nombre, apellido);
+      if (dup.usarId){
+        if (nomina.some(n => n.compId === dup.usarId)) return falla('Esa persona ya está en esta categoría.');
+        compId = dup.usarId;
+      } else {
+        const { data, error } = await sb.from('competidores').insert({
+          nombre, apellido, sexo: fAdd.sexo.value, grado_actual: Number(fAdd.grado.value),
+          fecha_nacimiento: fAdd.nac.value || null, observaciones: `Agregado por la mesa en la Fecha ${fecha.numero}`
+        }).select('id').single();
+        if (error) return falla(mensajeError(error));
+        compId = data.id;
+      }
     }
     if (!compId) return falla('Elige un competidor.');
     const { data: ins, error } = await sb.from('inscripciones')
       .insert({ categoria_id: cat.id, competidor_id: compId, presente: true }).select('id').single();
     if (error) return falla(mensajeError(error));
     orden = orden.concat(ins.id); guardarLocal(`kata-orden-${cat.id}`, orden);
+    const extraMsg = await extra.inscribirOtra(compId);
     ok.disabled = false;
     $('addModal').classList.remove('open');
     await cargarNomina();
-    toast('Competidor agregado a la categoría');
+    toast('Competidor agregado a la categoría' + extraMsg);
   });
 
   // ===================== COMPETENCIA =====================
