@@ -27,6 +27,16 @@
 
   if (modo !== 'prueba') return;
 
+  /* Registro de páginas visitadas en el modo prueba (se adjunta a la encuesta de feedback) */
+  const pagina = (location.pathname.split('/').pop() || 'index.html').replace('.html', '') || 'index';
+  try {
+    const v = JSON.parse(localStorage.getItem('prueba:visitas') || '[]');
+    const ultima = v[v.length - 1];
+    if (!ultima || ultima.p !== pagina || Date.now() - Date.parse(ultima.t) > 60000) v.push({ p: pagina, t: new Date().toISOString() });
+    localStorage.setItem('prueba:visitas', JSON.stringify(v.slice(-200)));
+  } catch (e) {}
+  const yaOpino = () => { try { return localStorage.getItem('prueba:encuesta') === 'respondida'; } catch (e) { return false; } };
+
   const css = document.createElement('style');
   css.textContent = `
     .modo-prueba{ display:flex; align-items:center; justify-content:center; gap:10px 16px; flex-wrap:wrap;
@@ -36,6 +46,8 @@
     .modo-prueba button{ font:inherit; font-weight:600; font-size:0.875rem; letter-spacing:0.04em; color:#1c2320;
       background:rgba(255,255,255,0.35); border:1px solid rgba(28,35,32,0.35); border-radius:999px;
       padding:6px 12px; min-height:36px; cursor:pointer; }
+    .modo-prueba button[data-opinion]{ background:#1c2320; color:#fff; border-color:#1c2320; }
+    .modo-prueba button[data-opinion]:hover{ background:#000; }
     .modo-prueba button:hover{ background:rgba(255,255,255,0.6); }
     .modo-prueba button:focus-visible{ outline:2px solid #1c2320; outline-offset:2px; }
     body.proyeccion .modo-prueba{ display:none; }`;
@@ -47,11 +59,16 @@
     bar.className = 'modo-prueba'; bar.setAttribute('role', 'region'); bar.setAttribute('aria-label', 'Modo prueba');
     bar.innerHTML = `<span><b>Modo prueba</b> · Lo que hagas aquí no cambia los resultados reales de la liga.</span>
       <span style="display:flex;gap:8px">
+        <button type="button" data-opinion>Dar mi opinión</button>
         <button type="button" data-restablecer>Restablecer datos</button>
         <button type="button" data-salir>Salir del modo prueba</button>
       </span>`;
     document.body.prepend(bar);
-    bar.querySelector('[data-salir]').addEventListener('click', () => window.salirModoPrueba());
+    bar.querySelector('[data-salir]').addEventListener('click', () =>
+      (yaOpino() || pagina === 'encuesta') ? window.salirModoPrueba() : (location.href = 'encuesta.html?salir=1'));
+    const op = bar.querySelector('[data-opinion]');
+    if (pagina === 'encuesta') op.hidden = true;
+    op.addEventListener('click', () => { location.href = 'encuesta.html'; });
     const rest = bar.querySelector('[data-restablecer]');
     const cliente = () => (typeof sb !== 'undefined' ? sb : null);   // definido en liga.js
     window.addEventListener('load', () => { if (!cliente()) rest.hidden = true; });
