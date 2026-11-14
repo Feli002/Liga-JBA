@@ -240,6 +240,12 @@
   .share button:focus-visible{ outline:2px solid #a06a1f; outline-offset:2px; }
   .share .st{ flex-basis:100%; font-size:0.875rem; color:#676c66; min-height:1.2em; margin:0; }
   .share .st.err{ color:var(--aka); }
+  .share .st a, .share .st button.lnk{ color:var(--ink); font-weight:600; text-decoration:underline; background:none; border:none; padding:0;
+    font:inherit; font-weight:600; cursor:pointer; margin-left:6px; }
+  .share .secs{ display:flex; gap:6px 16px; flex-wrap:wrap; margin-top:8px; font-size:0.9375rem; }
+  .share .secs label{ display:inline-flex; align-items:center; gap:6px; cursor:pointer; }
+  .share .secs input{ width:18px; height:18px; accent-color:var(--gold); }
+  .share .secs input:disabled + *, .share .secs label:has(input:disabled){ color:var(--muted); }
   /* ---------- ESTADOS ---------- */
   .state{ padding:36px 20px; text-align:center; color:var(--muted); font-size:1.125rem; }
   .state button{
@@ -292,13 +298,14 @@
       const [temporada] = await api('temporadas?select=*&order=anio.desc&limit=1');
       if (!temporada){ return showState('Todavía no hay una temporada creada.'); }
       const t = temporada.id;
-      const [tabla, podios, fechas, porCat] = await Promise.all([
+      const [tabla, podios, fechas, porCat, rendimiento] = await Promise.all([
         api(`v_tabla_general?select=*&temporada_id=eq.${t}&order=posicion.asc.nullslast,total.desc,competidor.asc`),
         api(`v_podios?select=*&temporada_id=eq.${t}&order=fecha_numero.asc,modalidad.asc,categoria.asc,lugar.asc`),
         api(`fechas?select=numero,dia,lugar,observaciones&temporada_id=eq.${t}&order=numero.asc`),
-        api(`v_tabla_categoria?select=*&temporada_id=eq.${t}&order=modalidad.asc,categoria.asc,posicion.asc,competidor.asc`).catch(() => [])
+        api(`v_tabla_categoria?select=*&temporada_id=eq.${t}&order=modalidad.asc,categoria.asc,posicion.asc,competidor.asc`).catch(() => []),
+        api(`v_rendimiento?select=*&temporada_id=eq.${t}&order=competidor_id.asc,fecha_numero.asc`).catch(() => [])
       ]);
-      render(temporada, tabla, podios, fechas, porCat);
+      render(temporada, tabla, podios, fechas, porCat, rendimiento);
       $('updated').textContent = 'Actualizado ' + new Date().toLocaleString('es-CL', { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' });
     } catch (e) {
       $('season').textContent = '';
@@ -310,7 +317,7 @@
     $('content').innerHTML = `<div class="card state">${esc(msg)}${retry ? '<br><button onclick="load()">Reintentar</button>' : ''}</div>`;
   }
 
-  function render(temp, tabla, podios, fechas, porCat){
+  function render(temp, tabla, podios, fechas, porCat, rendimiento){
     const disputadas = fechas.filter(f => podios.some(p => p.fecha_numero === f.numero)).length;
     $('season').textContent = `${temp.nombre} · ${disputadas} de ${temp.n_fechas} fechas disputadas`;
 
@@ -341,6 +348,16 @@
       <button type="button" role="tab" data-vista="general" aria-selected="true">Tabla general</button>
       <button type="button" role="tab" data-vista="categorias" aria-selected="false">Por categoría</button>
     </div>`;
+    html += `<div class="share informe">
+      <div class="txt"><b>Informe de la temporada en PDF</b><span>Elige qué incluir: se descarga un solo documento</span>
+        <div class="secs">
+          <label><input type="checkbox" data-sec="general" checked> Tabla general</label>
+          <label><input type="checkbox" data-sec="categorias" checked> Por categoría</label>
+          <label><input type="checkbox" data-sec="rendimiento" checked ${rendimiento.length ? '' : 'disabled'}> Rendimiento por competidor</label>
+        </div></div>
+      <div class="acts"><button type="button" class="wa" id="btnInforme">Descargar PDF</button></div>
+      <p class="st" role="status" aria-live="polite"></p>
+    </div>`;
     html += `<div id="vistaGeneral">`;
 
     // Tabla completa (el cuerpo se pinta aparte para poder alternar el descuento por Atenai)
@@ -370,12 +387,7 @@
         <th class="hide-sm">Fechas</th><th class="hide-sm">Kata</th><th class="hide-sm">Kumite</th>
         <th class="hide-sm">Atenai</th><th>Total</th>
       </tr></thead><tbody id="tbodyGeneral"></tbody></table>
-      <div class="rules" id="rulesGeneral"></div></div>
-    <div class="share pdf" style="margin-top:14px">
-      <div class="txt"><b>Tabla general en PDF</b><span>Posiciones de la temporada, lista para imprimir o enviar</span></div>
-      <div class="acts"><button type="button" class="wa" data-pdf="general">Descargar PDF</button></div>
-      <p class="st" role="status" aria-live="polite"></p>
-    </div>`;
+      <div class="rules" id="rulesGeneral"></div></div>`;
 
     if (eliminados.length){
       html += `<h2 class="section-title">Fuera de la temporada</h2><div class="card"><table><tbody>` +
@@ -397,11 +409,6 @@
       <div id="catPanel"></div>
       <p class="leyenda"><span><i class="lug l1">1</i>1º</span><span><i class="lug l2">2</i>2º</span><span><i class="lug l3">3</i>3º</span><span><i class="lug p">·</i>Participó</span><span><i class="lug x">—</i>No participó</span>
         <span>Puntos: solo los del podio en esa categoría (1º ${num(temp.pts_primero)}, 2º ${num(temp.pts_segundo)}, 3º ${num(temp.pts_tercero)}).</span></p>
-      <div class="share pdf" style="margin-top:14px">
-        <div class="txt"><b>Posiciones por categoría en PDF</b><span>Todas las categorías de Kata y Kumite en un solo documento</span></div>
-        <div class="acts"><button type="button" class="wa" data-pdf="categorias">Descargar PDF</button></div>
-        <p class="st" role="status" aria-live="polite"></p>
-      </div>
     </div>`;
 
     // Podios por fecha
@@ -457,22 +464,23 @@
       try { localStorage.setItem('tabla-atenai', e.target.checked ? 'si' : 'no'); } catch (err) {}
     });
 
-    // PDF de la tabla general y de las categorías
-    document.querySelectorAll('[data-pdf]').forEach(btn => btn.addEventListener('click', async () => {
-      const box = btn.closest('.share'), st = box.querySelector('.st');
+    // Informe en PDF (tabla general, por categoría, rendimiento)
+    $('btnInforme').addEventListener('click', async () => {
+      const btn = $('btnInforme'), box = btn.closest('.share'), st = box.querySelector('.st');
+      const secciones = {}; box.querySelectorAll('[data-sec]').forEach(c => secciones[c.dataset.sec] = c.checked && !c.disabled);
       btn.disabled = true; st.className = 'st'; st.textContent = 'Preparando el PDF…';
       try {
-        const incluir = $('chkAtenai').checked;
-        const r = btn.dataset.pdf === 'general'
-          ? await TablaPDF.general({ temp, filas: filasVista, eliminados, disputadas, incluirAtenai: incluir, dAtenai })
-          : await TablaPDF.categorias({ temp, porCat, fechasJugadas, disputadas });
+        const r = await TablaPDF.informe({
+          temp, filas: filasVista, eliminados, porCat, rendimiento, fechasJugadas, disputadas,
+          incluirAtenai: $('chkAtenai').checked, dAtenai, secciones
+        });
         const res = await HojaResultados.entregar([r.file], r.nombre.replace('.pdf', ''));
-        st.textContent = res === 'compartido' ? 'Listo: PDF compartido.' : res === 'cancelado' ? '' : 'Listo: PDF descargado.';
+        HojaResultados.estado(st, [r.file], r.nombre.replace('.pdf', ''), res, `${r.paginas} página${r.paginas === 1 ? '' : 's'}`);
       } catch (e) {
         st.className = 'st err';
         st.textContent = e.message || 'No se pudo generar el PDF.';
       } finally { btn.disabled = false; }
-    }));
+    });
 
     // Tooltip de la regla: se abre con clic y se cierra con clic afuera o Escape
     const btnInfo = $('btnInfoAtenai'), tip = $('tipAtenai');
@@ -566,15 +574,9 @@
     const botones = box.querySelectorAll('button');
     botones.forEach(b => b.disabled = true); st.className = 'st'; st.textContent = 'Preparando la hoja…';
     try {
-      if (btn.dataset.hoja === 'pdf'){
-        const { file } = await HojaResultados.pdf(anio, n);
-        const r = await HojaResultados.entregar([file], `Resultados Fecha ${n}`);
-        st.textContent = r === 'compartido' ? 'Listo: PDF compartido.' : r === 'cancelado' ? '' : 'Listo: PDF descargado.';
-      } else {
-        const files = await HojaResultados.imagenes(anio, n);
-        const r = await HojaResultados.entregar(files, `Resultados Fecha ${n}`);
-        st.textContent = r === 'compartido' ? 'Listo: imágenes compartidas.' : r === 'cancelado' ? '' : `Listo: ${files.length} imágenes descargadas.`;
-      }
+      const files = btn.dataset.hoja === 'pdf' ? [(await HojaResultados.pdf(anio, n)).file] : await HojaResultados.imagenes(anio, n);
+      const r = await HojaResultados.entregar(files, `Resultados Fecha ${n}`);
+      HojaResultados.estado(st, files, `Resultados Fecha ${n}`, r);
     } catch (e) {
       st.className = 'st err';
       st.textContent = /Failed to fetch|NetworkError|cargar/i.test(e.message) ? 'Sin conexión. Revisa tu internet e inténtalo otra vez.' : (e.message || 'No se pudo generar la hoja.');

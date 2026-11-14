@@ -245,9 +245,12 @@
     return files;
   }
 
-  /* Comparte con el menú del teléfono (WhatsApp aparece ahí); si no se puede, descarga */
+  /* En el teléfono comparte con el menú del sistema (WhatsApp aparece ahí); en computador descarga directo.
+     Si el navegador ya no acepta compartir (pasó el tiempo del toque), se descarga igual. */
+  const esMovil = () => matchMedia('(pointer: coarse)').matches;
+  const puedeCompartir = (files) => !!(navigator.canShare && navigator.canShare({ files }));
   async function entregar(files, titulo) {
-    if (navigator.canShare && navigator.canShare({ files })) {
+    if (esMovil() && puedeCompartir(files)) {
       try { await navigator.share({ files, title: titulo }); return 'compartido'; }
       catch (e) { if (e.name === 'AbortError') return 'cancelado'; }
     }
@@ -255,5 +258,30 @@
     return 'descargado';
   }
 
-  window.HojaResultados = { construir, pdf, imagenes, entregar, bajar };
+  /* Mensaje de estado con enlaces de respaldo: abrir/guardar el archivo y, en el teléfono, compartir.
+     Así siempre hay una forma manual si la descarga automática no se vio. */
+  function estado(st, files, titulo, resultado, extra) {
+    st.className = 'st';
+    st.textContent = '';
+    const n = files.length, pdfs = files.every(f => f.type === 'application/pdf');
+    const que = pdfs ? 'PDF' : (n === 1 ? 'imagen' : `${n} imágenes`);
+    let msg = resultado === 'compartido' ? `Listo: ${que} compartid${pdfs ? 'o' : (n === 1 ? 'a' : 'as')}.`
+            : resultado === 'cancelado' ? 'No se compartió.'
+            : `Listo: ${que} descargad${pdfs ? 'o' : (n === 1 ? 'a' : 'as')}${extra ? ` (${extra})` : ''}. ¿No aparece?`;
+    st.append(msg);
+    files.forEach((f, i) => {
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(f); a.download = f.name; a.target = '_blank'; a.rel = 'noopener';
+      a.textContent = n === 1 ? (pdfs ? 'Abrir el PDF' : 'Abrir la imagen') : `Abrir ${i + 1}`;
+      st.appendChild(a);
+    });
+    if (puedeCompartir(files)) {
+      const b = document.createElement('button');
+      b.type = 'button'; b.className = 'lnk'; b.textContent = 'Compartir';
+      b.addEventListener('click', () => navigator.share({ files, title: titulo }).catch(() => {}));
+      st.appendChild(b);
+    }
+  }
+
+  window.HojaResultados = { construir, pdf, imagenes, entregar, estado, bajar };
 })();
