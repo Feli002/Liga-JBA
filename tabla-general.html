@@ -121,6 +121,48 @@
 
   .rules{ font-size:0.875rem; color:var(--muted); line-height:1.6; padding:12px 16px; border-top:1px solid var(--line); }
   .rules b{ color:var(--ink); font-weight:500; }
+  .rules .aviso{ color:var(--ink); background:#fff6e6; border:1px solid #f0d9ae; border-radius:8px; padding:8px 12px; margin-bottom:10px; }
+  td.off{ color:var(--muted); text-decoration:line-through; }
+
+  /* ---------- INCLUIR ATENAI ---------- */
+  .section-head{ display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; margin:34px 0 12px; }
+  .section-head .section-title{ margin:0; }
+  .atenai-ctl{ display:flex; align-items:center; gap:10px; position:relative; }
+  .switch{ display:inline-flex; align-items:center; gap:10px; cursor:pointer; user-select:none; }
+  .switch input{ position:absolute; opacity:0; width:0; height:0; }
+  .switch .track{
+    width:46px; height:26px; border-radius:999px; background:#cfc9bd; position:relative; flex:none;
+    transition:background .18s;
+  }
+  .switch .track::after{
+    content:''; position:absolute; top:3px; left:3px; width:20px; height:20px; border-radius:50%;
+    background:#fff; box-shadow:0 1px 3px rgba(0,0,0,.25); transition:transform .18s;
+  }
+  .switch input:checked + .track{ background:var(--gold); }
+  .switch input:checked + .track::after{ transform:translateX(20px); }
+  .switch input:focus-visible + .track{ outline:2px solid var(--ink); outline-offset:2px; }
+  .switch .lbl{ font-family:'Oswald', sans-serif; font-size:1rem; letter-spacing:0.04em; color:var(--ink); }
+  .info{ position:relative; display:inline-flex; }
+  .info-btn{
+    width:26px; height:26px; border-radius:50%; border:1.5px solid var(--ink); background:#fff; color:var(--ink);
+    font:600 0.875rem/1 Georgia, 'Times New Roman', serif; font-style:italic; cursor:pointer; display:grid; place-items:center;
+  }
+  .info-btn:hover, .info-btn[aria-expanded="true"]{ background:var(--ink); color:#fff; }
+  .info-btn:focus-visible{ outline:2px solid var(--gold); outline-offset:2px; }
+  .tip{
+    position:absolute; right:0; top:calc(100% + 10px); z-index:20; width:min(340px, calc(100vw - 32px));
+    background:var(--ink); color:#fff; font-size:0.9375rem; line-height:1.5; padding:14px 16px; border-radius:12px;
+    box-shadow:0 10px 30px rgba(0,0,0,.25);
+  }
+  .tip b{ color:var(--gold); font-weight:600; }
+  .tip > b:first-child{ display:block; font-family:'Oswald', sans-serif; letter-spacing:0.06em; text-transform:uppercase; font-size:0.875rem; margin-bottom:6px; }
+  .tip::before{ content:''; position:absolute; right:7px; top:-6px; width:12px; height:12px; background:var(--ink); transform:rotate(45deg); }
+  @media (max-width:560px){
+    .section-head{ position:relative; }
+    .atenai-ctl, .info{ position:static; }
+    .tip{ left:0; right:0; top:100%; width:auto; }
+    .tip::before{ display:none; }
+  }
 
   /* ---------- FECHAS ---------- */
   .tabs{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom:14px; }
@@ -300,29 +342,34 @@
     </div>`;
     html += `<div id="vistaGeneral">`;
 
-    // Tabla completa
-    html += `<h2 class="section-title">Posiciones</h2><div class="card"><table>
+    // Tabla completa (el cuerpo se pinta aparte para poder alternar el descuento por Atenai)
+    const dAtenai = Number(temp.descuento_atenai) || 0;
+    html += `<div class="section-head">
+      <h2 class="section-title">Posiciones</h2>
+      <div class="atenai-ctl">
+        <label class="switch">
+          <input type="checkbox" id="chkAtenai" checked>
+          <span class="track" aria-hidden="true"></span>
+          <span class="lbl">Incluir Atenai</span>
+        </label>
+        <span class="info">
+          <button type="button" class="info-btn" id="btnInfoAtenai" aria-label="Regla de descuento por Atenai" aria-expanded="false" aria-controls="tipAtenai">i</button>
+          <div class="tip" id="tipAtenai" role="tooltip" hidden>
+            <b>Regla de descuento por Atenai</b>
+            Cada Atenai (falta sancionada en Kumite) resta <b>${num(dAtenai)} punto${dAtenai === 1 ? '' : 's'}</b> del total de la temporada, en la fecha en que se cometió.
+            Con el interruptor apagado, la tabla muestra el puntaje <b>sin ese descuento</b> y reordena las posiciones; la clasificación oficial es la que incluye el Atenai.
+            El Kinshi no resta puntos, pero cuenta para el desempate. El Hansoku deja al competidor fuera de la temporada.
+          </div>
+        </span>
+      </div>
+    </div>
+    <div class="card"><table>
       <thead><tr>
         <th>#</th><th class="l">Competidor</th>
         <th class="hide-sm">Fechas</th><th class="hide-sm">Kata</th><th class="hide-sm">Kumite</th>
         <th class="hide-sm">Atenai</th><th>Total</th>
-      </tr></thead><tbody>` +
-      activos.map(r => {
-        const desc = Number(r.atenai) * Number(temp.descuento_atenai);
-        return `<tr class="top${r.posicion}">
-          <td class="pos">${r.posicion}</td>
-          <td class="l name">${esc(r.competidor)}${r.dojo ? `<span class="dojo">${esc(r.dojo)}</span>` : ''}
-            <span class="detail">Asist. ${num(r.pts_asistencia)} · Kata ${num(r.pts_kata)} · Kumite ${num(r.pts_kumite)}${desc ? ` · Atenai −${num(desc)}` : ''}</span></td>
-          <td class="hide-sm">${r.fechas_asistidas}</td>
-          <td class="hide-sm">${num(r.pts_kata)}</td>
-          <td class="hide-sm">${num(r.pts_kumite)}</td>
-          <td class="hide-sm ${desc ? 'neg' : ''}">${desc ? '−' + num(desc) : '—'}</td>
-          <td class="total">${num(r.total)}</td>
-        </tr>`;
-      }).join('') +
-      `</tbody></table>
-      <div class="rules"><b>Puntaje:</b> ${num(temp.pts_asistencia)} por asistir a cada fecha · 1º ${num(temp.pts_primero)}, 2º ${num(temp.pts_segundo)} y 3º ${num(temp.pts_tercero)} en Kata y Kumite · −${num(temp.descuento_atenai)} por cada Atenai.<br>
-      <b>Desempate:</b> más Ippones directos en la liga; luego menos faltas (Atenai + Kinshi). Si persiste, es empate técnico.</div></div>`;
+      </tr></thead><tbody id="tbodyGeneral"></tbody></table>
+      <div class="rules" id="rulesGeneral"></div></div>`;
 
     if (eliminados.length){
       html += `<h2 class="section-title">Fuera de la temporada</h2><div class="card"><table><tbody>` +
@@ -354,6 +401,56 @@
       }).join('') + `</div><div id="fechaPanel"></div>`;
 
     $('content').innerHTML = html;
+
+    // --- Posiciones: con o sin descuento por Atenai
+    const pintarGeneral = (incluir) => {
+      // Sin el descuento se recalcula el total y se reordena con las mismas reglas de desempate
+      let filas = activos.map(r => {
+        const desc = Number(r.atenai) * dAtenai;
+        return { ...r, desc, totalVista: incluir ? Number(r.total) : Number(r.total) + desc };
+      });
+      if (!incluir){
+        filas.sort((a, b) => b.totalVista - a.totalVista || Number(b.ippones) - Number(a.ippones)
+          || (Number(a.atenai) + Number(a.kinshi)) - (Number(b.atenai) + Number(b.kinshi)) || a.competidor.localeCompare(b.competidor, 'es'));
+        let pos = 0;
+        filas.forEach((r, i) => {
+          const prev = filas[i - 1];
+          const igual = prev && prev.totalVista === r.totalVista && Number(prev.ippones) === Number(r.ippones)
+            && (Number(prev.atenai) + Number(prev.kinshi)) === (Number(r.atenai) + Number(r.kinshi));
+          r.posVista = igual ? prev.posVista : i + 1;
+        });
+      } else {
+        filas.forEach(r => r.posVista = r.posicion);
+      }
+      $('tbodyGeneral').innerHTML = filas.map(r => `<tr class="top${r.posVista}">
+          <td class="pos">${r.posVista}</td>
+          <td class="l name">${esc(r.competidor)}${r.dojo ? `<span class="dojo">${esc(r.dojo)}</span>` : ''}
+            <span class="detail">Asist. ${num(r.pts_asistencia)} · Kata ${num(r.pts_kata)} · Kumite ${num(r.pts_kumite)}${r.desc && incluir ? ` · Atenai −${num(r.desc)}` : ''}</span></td>
+          <td class="hide-sm">${r.fechas_asistidas}</td>
+          <td class="hide-sm">${num(r.pts_kata)}</td>
+          <td class="hide-sm">${num(r.pts_kumite)}</td>
+          <td class="hide-sm ${r.desc ? (incluir ? 'neg' : 'off') : ''}">${r.desc ? '−' + num(r.desc) : '—'}</td>
+          <td class="total">${num(r.totalVista)}</td>
+        </tr>`).join('');
+      $('rulesGeneral').innerHTML = (incluir ? '' : `<div class="aviso">Puntaje <b>sin el descuento por Atenai</b>. La clasificación oficial es la que lo incluye.</div>`) +
+        `<b>Puntaje:</b> ${num(temp.pts_asistencia)} por asistir a cada fecha · 1º ${num(temp.pts_primero)}, 2º ${num(temp.pts_segundo)} y 3º ${num(temp.pts_tercero)} en Kata y Kumite · −${num(dAtenai)} por cada Atenai.<br>
+        <b>Desempate:</b> más Ippones directos en la liga; luego menos faltas (Atenai + Kinshi). Si persiste, es empate técnico.`;
+    };
+    let incluirAtenai = true; try { incluirAtenai = localStorage.getItem('tabla-atenai') !== 'no'; } catch (e) {}
+    $('chkAtenai').checked = incluirAtenai;
+    pintarGeneral(incluirAtenai);
+    $('chkAtenai').addEventListener('change', (e) => {
+      pintarGeneral(e.target.checked);
+      try { localStorage.setItem('tabla-atenai', e.target.checked ? 'si' : 'no'); } catch (err) {}
+    });
+
+    // Tooltip de la regla: se abre con clic y se cierra con clic afuera o Escape
+    const btnInfo = $('btnInfoAtenai'), tip = $('tipAtenai');
+    const abrirTip = (v) => { tip.hidden = !v; btnInfo.setAttribute('aria-expanded', String(v)); };
+    btnInfo.addEventListener('click', (e) => { e.stopPropagation(); abrirTip(tip.hidden); });
+    tip.addEventListener('click', (e) => e.stopPropagation());
+    document.addEventListener('click', () => abrirTip(false));
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') abrirTip(false); });
 
     // --- Vista general / por categoría
     const vistas = document.querySelectorAll('.vista [data-vista]');
