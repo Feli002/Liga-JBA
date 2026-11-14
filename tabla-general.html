@@ -151,6 +151,37 @@
   .dot.l1{ background:var(--gold); } .dot.l2{ background:var(--silver); } .dot.l3{ background:var(--bronze); }
 
 
+  /* ---------- VISTA: GENERAL / POR CATEGORÍA ---------- */
+  .vista{ display:inline-flex; background:var(--soft); border-radius:12px; padding:4px; gap:4px; margin:4px 0 18px; }
+  .vista button{ font-family:'Oswald', sans-serif; font-size:1rem; letter-spacing:0.04em; border:none; background:none; color:var(--muted);
+    padding:10px 18px; border-radius:9px; cursor:pointer; min-height:44px; }
+  .vista button[aria-selected="true"]{ background:#fff; color:var(--ink); font-weight:600; box-shadow:0 2px 8px rgba(20,20,10,0.08); }
+  .vista button:focus-visible{ outline:2px solid #a06a1f; outline-offset:2px; }
+  .filtros{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom:16px; }
+  .filtros select{ font-family:'Oswald', sans-serif; font-size:1rem; border:1px solid var(--line); border-radius:999px; background:#fff; color:var(--ink);
+    padding:9px 36px 9px 14px; min-height:44px; max-width:100%; appearance:none; -webkit-appearance:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%231c2320' stroke-width='2'/%3E%3C/svg%3E");
+    background-repeat:no-repeat; background-position:right 14px center; }
+  .catgrid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(min(100%, 360px), 1fr)); gap:14px; align-items:start; }
+  .catgrid.una{ grid-template-columns:1fr; }
+  .cattab{ padding:4px 0 6px; }
+  .cattab h3{ font-size:1.125rem; font-weight:600; margin:0; padding:14px 16px 4px; line-height:1.25; }
+  .cattab .sub{ font-size:0.875rem; color:var(--muted); padding:0 16px 8px; }
+  .cattab table{ font-size:1rem; }
+  .cattab thead th{ padding:10px 8px 8px; font-size:0.75rem; }
+  .cattab td{ padding:9px 8px; }
+  .cattab td.pos{ width:36px; font-size:1.25rem; }
+  .cattab td.name{ font-weight:500; }
+  .cattab td.total{ font-size:1.375rem; }
+  .cattab .lid{ color:var(--gold); }
+  .lug{ display:inline-grid; place-items:center; width:26px; height:26px; border-radius:50%; font-size:0.875rem; font-weight:600; color:#fff; }
+  .lug.l1{ background:var(--gold); color:var(--ink); } .lug.l2{ background:var(--silver); } .lug.l3{ background:var(--bronze); }
+  .lug.p{ background:var(--soft); color:var(--muted); font-weight:500; }
+  .lug.x{ color:var(--line); font-weight:400; }
+  .leyenda{ display:flex; gap:14px; flex-wrap:wrap; font-size:0.875rem; color:var(--muted); margin:14px 0 0; align-items:center; }
+  .leyenda span{ display:inline-flex; align-items:center; gap:6px; }
+  @media (max-width:560px){ .cattab td.name{ max-width:140px; overflow-wrap:anywhere; } }
+
   /* ---------- HOJA DE RESULTADOS ---------- */
   .share{ display:flex; align-items:center; gap:12px; flex-wrap:wrap; background:#fff; border:1px solid var(--line); border-radius:16px;
     padding:14px 16px; margin-bottom:16px; box-shadow:0 6px 24px rgba(20,20,10,0.06); }
@@ -218,12 +249,13 @@
       const [temporada] = await api('temporadas?select=*&order=anio.desc&limit=1');
       if (!temporada){ return showState('Todavía no hay una temporada creada.'); }
       const t = temporada.id;
-      const [tabla, podios, fechas] = await Promise.all([
+      const [tabla, podios, fechas, porCat] = await Promise.all([
         api(`v_tabla_general?select=*&temporada_id=eq.${t}&order=posicion.asc.nullslast,total.desc,competidor.asc`),
         api(`v_podios?select=*&temporada_id=eq.${t}&order=fecha_numero.asc,modalidad.asc,categoria.asc,lugar.asc`),
-        api(`fechas?select=numero,dia,lugar,observaciones&temporada_id=eq.${t}&order=numero.asc`)
+        api(`fechas?select=numero,dia,lugar,observaciones&temporada_id=eq.${t}&order=numero.asc`),
+        api(`v_tabla_categoria?select=*&temporada_id=eq.${t}&order=modalidad.asc,categoria.asc,posicion.asc,competidor.asc`).catch(() => [])
       ]);
-      render(temporada, tabla, podios, fechas);
+      render(temporada, tabla, podios, fechas, porCat);
       $('updated').textContent = 'Actualizado ' + new Date().toLocaleString('es-CL', { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' });
     } catch (e) {
       $('season').textContent = '';
@@ -235,7 +267,7 @@
     $('content').innerHTML = `<div class="card state">${esc(msg)}${retry ? '<br><button onclick="load()">Reintentar</button>' : ''}</div>`;
   }
 
-  function render(temp, tabla, podios, fechas){
+  function render(temp, tabla, podios, fechas, porCat){
     const disputadas = fechas.filter(f => podios.some(p => p.fecha_numero === f.numero)).length;
     $('season').textContent = `${temp.nombre} · ${disputadas} de ${temp.n_fechas} fechas disputadas`;
 
@@ -260,6 +292,13 @@
           <div class="pts">${num(r.total)}<small>PTS</small></div>
         </div>`).join('') + '</div>';
     }
+
+    // Vista: tabla general o por categoría
+    html += `<div class="vista" role="tablist" aria-label="Vista">
+      <button type="button" role="tab" data-vista="general" aria-selected="true">Tabla general</button>
+      <button type="button" role="tab" data-vista="categorias" aria-selected="false">Por categoría</button>
+    </div>`;
+    html += `<div id="vistaGeneral">`;
 
     // Tabla completa
     html += `<h2 class="section-title">Posiciones</h2><div class="card"><table>
@@ -290,6 +329,22 @@
         eliminados.map(r => `<tr><td class="l name">${esc(r.competidor)}<span class="dojo">Hansoku: pierde la temporada</span></td></tr>`).join('') +
         `</tbody></table></div>`;
     }
+    html += `</div>`;   // fin vistaGeneral
+
+    // Por categoría: posiciones de la temporada dentro de cada categoría
+    html += `<div id="vistaCategorias" hidden>
+      <h2 class="section-title">Posiciones por categoría</h2>
+      <div class="filtros">
+        <div class="tabs" role="tablist" aria-label="Modalidad" style="margin:0">
+          <button class="tab" role="tab" data-mod="Kata" aria-selected="true">Kata</button>
+          <button class="tab" role="tab" data-mod="Kumite" aria-selected="false">Kumite</button>
+        </div>
+        <select id="selCat" aria-label="Categoría"></select>
+      </div>
+      <div id="catPanel"></div>
+      <p class="leyenda"><span><i class="lug l1">1</i>1º</span><span><i class="lug l2">2</i>2º</span><span><i class="lug l3">3</i>3º</span><span><i class="lug p">·</i>Participó</span><span><i class="lug x">—</i>No participó</span>
+        <span>Puntos: solo los del podio en esa categoría (1º ${num(temp.pts_primero)}, 2º ${num(temp.pts_segundo)}, 3º ${num(temp.pts_tercero)}).</span></p>
+    </div>`;
 
     // Podios por fecha
     html += `<h2 class="section-title">Podios por fecha</h2><div class="tabs" role="tablist">` +
@@ -299,6 +354,54 @@
       }).join('') + `</div><div id="fechaPanel"></div>`;
 
     $('content').innerHTML = html;
+
+    // --- Vista general / por categoría
+    const vistas = document.querySelectorAll('.vista [data-vista]');
+    const verVista = (v) => {
+      vistas.forEach(b => b.setAttribute('aria-selected', String(b.dataset.vista === v)));
+      $('vistaGeneral').hidden = v !== 'general';
+      $('vistaCategorias').hidden = v !== 'categorias';
+      try { localStorage.setItem('tabla-vista', v); } catch (e) {}
+    };
+    vistas.forEach(b => b.addEventListener('click', () => verVista(b.dataset.vista)));
+
+    const fechasJugadas = fechas.filter(f => podios.some(p => p.fecha_numero === f.numero)).map(f => f.numero);
+    const catsDe = (m) => [...new Set(porCat.filter(r => r.modalidad === m).map(r => r.categoria))];
+    let modSel = 'Kata';
+    const pintarCats = () => {
+      const sel = $('selCat'), filtro = sel.value;
+      const cats = catsDe(modSel).filter(c => !filtro || c === filtro);
+      if (!porCat.length){
+        $('catPanel').innerHTML = '<div class="card state">La tabla por categoría estará disponible cuando se actualice la base de datos.</div>'; return;
+      }
+      if (!cats.length){ $('catPanel').innerHTML = '<div class="card state">Aún no hay resultados en esta modalidad.</div>'; return; }
+      const lugar = (l, jugo) => !jugo ? '<i class="lug x">—</i>' : l ? `<i class="lug l${l}">${l}</i>` : '<i class="lug p">·</i>';
+      $('catPanel').innerHTML = `<div class="catgrid ${cats.length === 1 ? 'una' : ''}">` + cats.map(c => {
+        const filas = porCat.filter(r => r.modalidad === modSel && r.categoria === c);
+        const cont = {}; filas.forEach(r => cont[r.posicion] = (cont[r.posicion] || 0) + 1);
+        return `<div class="card cattab"><h3>${esc(c)}</h3><div class="sub">${filas.length} competidor${filas.length === 1 ? '' : 'es'} en la temporada</div>
+          <table><thead><tr><th>#</th><th class="l">Competidor</th>${fechasJugadas.map(n => `<th>F${n}</th>`).join('')}<th>Pts</th></tr></thead><tbody>` +
+          filas.map(r => `<tr class="top${r.posicion}">
+            <td class="pos">${r.posicion}</td>
+            <td class="l name">${esc(r.competidor)}${cont[r.posicion] > 1 ? '<span class="dojo">Empate</span>' : ''}</td>
+            ${fechasJugadas.map(n => `<td>${lugar(r.lugares[n], n in r.lugares)}</td>`).join('')}
+            <td class="total">${num(r.puntos)}</td></tr>`).join('') +
+          `</tbody></table></div>`;
+      }).join('') + '</div>';
+    };
+    const llenarSelect = () => {
+      $('selCat').innerHTML = `<option value="">Todas las categorías de ${modSel}</option>` +
+        catsDe(modSel).map(c => `<option value="${esc(c)}">${esc(c)}</option>`).join('');
+    };
+    document.querySelectorAll('[data-mod]').forEach(b => b.addEventListener('click', () => {
+      modSel = b.dataset.mod;
+      document.querySelectorAll('[data-mod]').forEach(x => x.setAttribute('aria-selected', String(x === b)));
+      llenarSelect(); pintarCats();
+    }));
+    $('selCat').addEventListener('change', pintarCats);
+    llenarSelect(); pintarCats();
+    let vistaGuardada = 'general'; try { vistaGuardada = localStorage.getItem('tabla-vista') || 'general'; } catch (e) {}
+    if (vistaGuardada === 'categorias' && porCat.length) verVista('categorias');
 
     const select = (n) => {
       document.querySelectorAll('.tab').forEach(b => b.setAttribute('aria-selected', String(Number(b.dataset.f) === n)));
