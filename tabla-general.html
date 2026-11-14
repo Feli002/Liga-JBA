@@ -6,6 +6,7 @@
 <title>Tabla general — WUKF</title>
 <script src="modo.js"></script>
 <script src="hoja.js" defer></script>
+<script src="tabla-pdf.js" defer></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Bebas+Neue&display=swap" rel="stylesheet">
@@ -369,7 +370,12 @@
         <th class="hide-sm">Fechas</th><th class="hide-sm">Kata</th><th class="hide-sm">Kumite</th>
         <th class="hide-sm">Atenai</th><th>Total</th>
       </tr></thead><tbody id="tbodyGeneral"></tbody></table>
-      <div class="rules" id="rulesGeneral"></div></div>`;
+      <div class="rules" id="rulesGeneral"></div></div>
+    <div class="share pdf" style="margin-top:14px">
+      <div class="txt"><b>Tabla general en PDF</b><span>Posiciones de la temporada, lista para imprimir o enviar</span></div>
+      <div class="acts"><button type="button" class="wa" data-pdf="general">Descargar PDF</button></div>
+      <p class="st" role="status" aria-live="polite"></p>
+    </div>`;
 
     if (eliminados.length){
       html += `<h2 class="section-title">Fuera de la temporada</h2><div class="card"><table><tbody>` +
@@ -391,6 +397,11 @@
       <div id="catPanel"></div>
       <p class="leyenda"><span><i class="lug l1">1</i>1º</span><span><i class="lug l2">2</i>2º</span><span><i class="lug l3">3</i>3º</span><span><i class="lug p">·</i>Participó</span><span><i class="lug x">—</i>No participó</span>
         <span>Puntos: solo los del podio en esa categoría (1º ${num(temp.pts_primero)}, 2º ${num(temp.pts_segundo)}, 3º ${num(temp.pts_tercero)}).</span></p>
+      <div class="share pdf" style="margin-top:14px">
+        <div class="txt"><b>Posiciones por categoría en PDF</b><span>Todas las categorías de Kata y Kumite en un solo documento</span></div>
+        <div class="acts"><button type="button" class="wa" data-pdf="categorias">Descargar PDF</button></div>
+        <p class="st" role="status" aria-live="polite"></p>
+      </div>
     </div>`;
 
     // Podios por fecha
@@ -403,6 +414,7 @@
     $('content').innerHTML = html;
 
     // --- Posiciones: con o sin descuento por Atenai
+    let filasVista = [];   // filas tal como se ven (las usa el PDF)
     const pintarGeneral = (incluir) => {
       // Sin el descuento se recalcula el total y se reordena con las mismas reglas de desempate
       let filas = activos.map(r => {
@@ -422,6 +434,7 @@
       } else {
         filas.forEach(r => r.posVista = r.posicion);
       }
+      filasVista = filas;
       $('tbodyGeneral').innerHTML = filas.map(r => `<tr class="top${r.posVista}">
           <td class="pos">${r.posVista}</td>
           <td class="l name">${esc(r.competidor)}${r.dojo ? `<span class="dojo">${esc(r.dojo)}</span>` : ''}
@@ -443,6 +456,23 @@
       pintarGeneral(e.target.checked);
       try { localStorage.setItem('tabla-atenai', e.target.checked ? 'si' : 'no'); } catch (err) {}
     });
+
+    // PDF de la tabla general y de las categorías
+    document.querySelectorAll('[data-pdf]').forEach(btn => btn.addEventListener('click', async () => {
+      const box = btn.closest('.share'), st = box.querySelector('.st');
+      btn.disabled = true; st.className = 'st'; st.textContent = 'Preparando el PDF…';
+      try {
+        const incluir = $('chkAtenai').checked;
+        const r = btn.dataset.pdf === 'general'
+          ? await TablaPDF.general({ temp, filas: filasVista, eliminados, disputadas, incluirAtenai: incluir, dAtenai })
+          : await TablaPDF.categorias({ temp, porCat, fechasJugadas, disputadas });
+        const res = await HojaResultados.entregar([r.file], r.nombre.replace('.pdf', ''));
+        st.textContent = res === 'compartido' ? 'Listo: PDF compartido.' : res === 'cancelado' ? '' : 'Listo: PDF descargado.';
+      } catch (e) {
+        st.className = 'st err';
+        st.textContent = e.message || 'No se pudo generar el PDF.';
+      } finally { btn.disabled = false; }
+    }));
 
     // Tooltip de la regla: se abre con clic y se cierra con clic afuera o Escape
     const btnInfo = $('btnInfoAtenai'), tip = $('tipAtenai');
